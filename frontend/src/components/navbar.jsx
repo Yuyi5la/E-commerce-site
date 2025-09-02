@@ -47,7 +47,7 @@ export default function NavbarWithSidePanel() {
 
       {/* Overlay (dim background) */}
       <div
-        className={`fixed inset-0 bg-black/40 transition-opacity ${
+        className={`fixed inset-0 bg-black/60 transition-opacity ${
           open ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"
         }`}
         onClick={() => setOpen(false)}
