@@ -41,10 +41,10 @@ const Home = () => {
       >
         <div className="flex gap-4 sm:gap-6 items-stretch snap-x snap-mandatory md:snap-proximity">
           {[
-            { src: "/homeimg.jpg", title: "Iced Gap Grill", price: "$180" },
+            { src: "/homeimg.jpg", title: "Iced Grillz", price: "$180" },
             { src: "/Grillz 2.jpg", title: "Mirror Chrome", price: "$220" },
-            { src: "/Grillz 5.webp", title: "Custom Letters", price: "$260" },
-            { src: "/Grillz 6.jpg", title: "Gold Drip", price: "$240" },
+            { src: "/Grillz 5.webp", title: "Gap Grillz", price: "$260" },
+            { src: "/Grillz 6.jpg", title: "Chrome Drip", price: "$240" },
           ].map((p) => (
             <article
               key={p.title}

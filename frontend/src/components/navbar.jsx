@@ -6,8 +6,8 @@ export default function NavbarWithSidePanel() {
   const items = ["Home", "About", "Shop", "BestSellers", "Contact","Login/Register"];
 
   // filtered items based on search
-  const filtered = items.filter((it) =>
-    it.toLowerCase().includes(query.toLowerCase())
+  const filtered = items.filter((x) =>
+    x.toLowerCase().includes(query.toLowerCase())
   );
 
   // close on Escape
@@ -59,7 +59,7 @@ export default function NavbarWithSidePanel() {
         className={`fixed inset-y-0 left-0 z-20 transform bg-white border-r border-black p-6
                     transition-transform duration-300 ease-in-out
                     ${open ? "translate-x-0" : "-translate-x-full"}
-                    w-full sm:w-1/2 md:w-2/5 lg:w-1/3`}
+                    w-3/4 sm:w-1/2 md:w-2/5 lg:w-1/3`}
         aria-hidden={!open}
         aria-labelledby="side-panel-title"
       >
