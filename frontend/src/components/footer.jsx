@@ -4,7 +4,7 @@ const Footer = () => {
   return (
     <section className="w-full bg-black text-white py-10 mt-10 px-6">
       
-      <h1 className="text-2xl sm:text-3xl font-bold mb-4">
+      <h1 className="text-2xl sm:text-1xl font-bold mb-4">
         Join the Chrome Club
       </h1>
       <h4>get updates for new drops</h4>

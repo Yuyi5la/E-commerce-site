@@ -20,87 +20,88 @@ const Home = () => {
           </button>
         </div>
       </div>
-  {/* === Products (mobile-friendly chrome panel) === */}
-<section className="w-full bg-white py-8">
-  <div className="mx-auto max-w-6xl px-4">
-    <div className="h-px w-full bg-gray-300" />
 
-    <h2 className="mt-4 text-center text-2xl sm:text-3xl font-bold tracking-wide">
-      Our Grillz
-    </h2>
-    <p className="mt-1 text-center text-sm text-gray-500">
-      Premium shine • Stainless attitude
-    </p>
+      {/* Grillz Section */}
+      <section className="w-full bg-white py-16">
+        <div className="max-w-6xl mx-auto px-6 lg:px-12 flex flex-col-reverse md:flex-row gap-12 items-center">
+          {/* Text Section */}
+          <div className="text-center md:text-left flex-1">
+            <h2 className="text-2xl md:text-4xl font-extrabold text-black mb-6">
+              CUSTOMIZE YOUR GRILLZ!
+            </h2>
+            <p className="text-gray-700 leading-relaxed mb-6">
+              Let’s trap the stars in your smile. You dream it, we chrome it!  
+               Our professional builders in the heart of Lagos, Nigeria craft each grill with
+              precision and passion to deliver nothing but the best. 
+              <br />
+              <br />
+              We deliver nothing but the best,making
+             sure your creativity shines and your confidence glows
+            </p>
+            <button className="bg-black text-white px-6 py-3 rounded-md font-semibold hover:bg-gray-800 transition">
+              Design Your Grillz
+            </button>
+          </div>
 
-    <div className="mt-6 rounded-2xl bg-neutral-900 text-white p-3 sm:p-6 lg:p-8">
-      <div className="h-px w-full bg-gradient-to-r from-zinc-700 via-zinc-400 to-zinc-700 opacity-60" />
-
-      <div
-        className="mt-4 overflow-x-auto px-1 -mx-1 sm:mx-0 touch-pan-x"
-        aria-hidden={false}
-      >
-        <div className="flex gap-4 sm:gap-6 items-stretch snap-x snap-mandatory md:snap-proximity">
-          {[
-            { src: "/homeimg.jpg", title: "Iced Grillz", price: "$180" },
-            { src: "/Grillz 2.jpg", title: "Mirror Chrome", price: "$220" },
-            { src: "/Grillz 5.webp", title: "Gap Grillz", price: "$260" },
-            { src: "/Grillz 6.jpg", title: "Chrome Drip", price: "$240" },
-          ].map((p) => (
-            <article
-              key={p.title}
-              className="
-                group relative snap-start
-                min-w-[80%] sm:min-w-[200px] md:min-w-[240px]
-                rounded-2xl overflow-hidden
-                "
-            >
-              {/* thin chrome frame (less intense on small screens) */}
-              <div className="absolute inset-0 rounded-2xl p-[1px]
-                              bg-[linear-gradient(135deg,#9ca3af_0%,#f5f5f5_25%,#9ca3af_50%,#f5f5f5_75%,#9ca3af_100%)]
-                              opacity-60 sm:opacity-80 transition-opacity" />
-
-              {/* inner card */}
-              <div className="relative z-10 h-full w-full rounded-2xl bg-neutral-900/85 backdrop-blur-sm">
-                {/* subtle shine (reduced on mobile) */}
-                <div className="pointer-events-none absolute -left-1/3 -top-1/4 h-[140%] w-1/2 rotate-[25deg]
-                                bg-gradient-to-r from-white/6 via-white/3 to-transparent blur-sm
-                                opacity-0 sm:opacity-100 sm:group-hover:translate-x-8 transition-transform" />
-
-                {/* image area: keep aspect ratio, cover */}
-                <div className="w-full aspect-[4/5]">
-                  <img
-                    src={p.src}
-                    alt={p.title}
-                    className="w-full h-full object-cover"
-                  />
-                </div>
-
-                {/* info */}
-                <div className="p-3 sm:p-4 flex flex-col justify-between">
-                  <h3 className="text-sm sm:text-base text-zinc-100 font-semibold">
-                    {p.title}
-                  </h3>
-                  <div className="mt-2 flex items-center justify-between">
-                    <span className="text-xs sm:text-sm text-zinc-300">{p.price}</span>
-                    <button className="rounded-full px-3 py-1 text-xs sm:text-sm font-medium text-black
-                                       bg-gradient-to-r from-zinc-100 to-slate-200 hover:from-white hover:to-white transition">
-                      Add
-                    </button>
-                  </div>
-                </div>
-              </div>
-
-              {/* hover lift (subtle) */}
-              <div className="absolute inset-0 rounded-2xl group-hover:scale-[1.02] transition-transform" />
-            </article>
-          ))}
+          {/* Image Section */}
+          <div className="flex justify-center flex-1">
+            <img
+              src="/Grillz 2.jpg" // image path
+              alt="Custom Grillz"
+              className="rounded-lg shadow-lg max-h-[400px] object-cover"
+            />
+          </div>
         </div>
+      </section>
+      <div className="bg-white overflow-hidden py-10">
+      {/* Scrolling wrapper */}
+      <div className="flex animate-marquee space-x-8">
+        {/* Repeat images (to create seamless loop) */}
+        <img
+          src="/Grillz 2.jpg"
+          alt="Grillz 1"
+          className="h-40 w-auto object-cover rounded-lg shadow-md"
+        />
+        <img
+          src="/Grillz 6.jpg"
+          alt="Grillz 2"
+          className="h-40 w-auto object-cover rounded-lg shadow-md"
+        />
+        <img
+          src="/grillz 4.jpg"
+          alt="Grillz 3"
+          className="h-40 w-auto object-cover rounded-lg shadow-md"
+        />
+        <img
+          src="/Grillz 5.webp"
+          alt="Grillz 4"
+          className="h-40 w-auto object-cover rounded-lg shadow-md"
+        />
+
+        {/* Duplicate for infinite effect */}
+        <img
+          src="/Grillz 2.jpg"
+          alt="Grillz 1 duplicate"
+          className="h-40 w-auto object-cover rounded-lg shadow-md"
+        />
+        <img
+          src="/Grillz 6.jpg"
+          alt="Grillz 2 duplicate"
+          className="h-40 w-auto object-cover rounded-lg shadow-md"
+        />
+        <img
+          src="/grillz 4.jpg"
+          alt="Grillz 3 duplicate"
+          className="h-40 w-auto object-cover rounded-lg shadow-md"
+        />
+        <img
+          src="/Grillz 5.webp"
+          alt="Grillz 4 duplicate"
+          className="h-40 w-auto object-cover rounded-lg shadow-md"
+        />
       </div>
-    </div>
-  </div>
-</section>
 
-
+      </div>
     </div>
   );
 };
