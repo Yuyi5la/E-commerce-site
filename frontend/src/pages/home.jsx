@@ -54,30 +54,7 @@ const Home = () => {
           </div>
         </div>
       </section>
-<div className="bg-white overflow-hidden py-10">
-  {/* Scrolling wrapper */}
-  <div className="flex animate-marquee space-x-8">
-    <img src="/Grillz 2.jpg" alt="Grillz 1" className="h-40 w-auto object-cover rounded-lg shadow-md" />
-    <img src="/Grillz 6.jpg" alt="Grillz 2" className="h-40 w-auto object-cover rounded-lg shadow-md" />
-    <img src="/grillz 4.jpg" alt="Grillz 3" className="h-40 w-auto object-cover rounded-lg shadow-md" />
-    <img src="/Grillz 5.webp" alt="Grillz 4" className="h-40 w-auto object-cover rounded-lg shadow-md" />
-    <img src="/Grillz 2.jpg" alt="Grillz 1 duplicate" className="h-40 w-auto object-cover rounded-lg shadow-md" />
-    <img src="/Grillz 6.jpg" alt="Grillz 2 duplicate" className="h-40 w-auto object-cover rounded-lg shadow-md" />
-    <img src="/grillz 4.jpg" alt="Grillz 3 duplicate" className="h-40 w-auto object-cover rounded-lg shadow-md" />
-    <img src="/Grillz 5.webp" alt="Grillz 4 duplicate" className="h-40 w-auto object-cover rounded-lg shadow-md" />
-    
 
-    {/* Duplicate set for seamless loop */}
-    <img src="/Grillz 2.jpg" alt="Grillz 1 duplicate" className="h-40 w-auto object-cover rounded-lg shadow-md" />
-    <img src="/Grillz 6.jpg" alt="Grillz 2 duplicate" className="h-40 w-auto object-cover rounded-lg shadow-md" />
-    <img src="/grillz 4.jpg" alt="Grillz 3 duplicate" className="h-40 w-auto object-cover rounded-lg shadow-md" />
-    <img src="/Grillz 5.webp" alt="Grillz 4 duplicate" className="h-40 w-auto object-cover rounded-lg shadow-md" />
-    <img src="/Grillz 2.jpg" alt="Grillz 1 duplicate" className="h-40 w-auto object-cover rounded-lg shadow-md" />
-    <img src="/Grillz 6.jpg" alt="Grillz 2 duplicate" className="h-40 w-auto object-cover rounded-lg shadow-md" />
-    <img src="/grillz 4.jpg" alt="Grillz 3 duplicate" className="h-40 w-auto object-cover rounded-lg shadow-md" />
-    <img src="/Grillz 5.webp" alt="Grillz 4 duplicate" className="h-40 w-auto object-cover rounded-lg shadow-md" />
-  </div>
-</div>
 <Marquee speed={30} gradient={false} pauseOnHover className="items-center">
   <div className="flex items-center">
     <img src="/Grillz 2.jpg" alt="Grillz" className="h-40 w-auto mx-4 rounded-lg shadow-md block" />
