@@ -2,13 +2,15 @@ import express from "express";
 import pkg from "pg";
 import cors from "cors";
 import dotenv from "dotenv";
+import { PrismaClient } from "@prisma/client";
 
+const prisma = new PrismaClient();
 
 dotenv.config();
 const { Pool } = pkg;
 
 const app = express();
-const PORT = process.env.PORT || 3000;
+
 app.use(cors());
 app.use(express.json());
 
@@ -21,6 +23,7 @@ const pool = new Pool({
   port: process.env.DB_PORT,
 });
 
+const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });
