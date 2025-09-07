@@ -1,6 +1,6 @@
 generator client {
   provider = "prisma-client-js"
-  output   = "../generated/prisma"
+  
 }
 
 datasource db {
@@ -31,7 +31,7 @@ model products {
   price       Decimal       @db.Decimal(10, 2)
   stock       Int
   description String?
-  image_url   String?       @db.VarChar(255)
+  image_urls  String[]
   order_items order_items[]
 }
 

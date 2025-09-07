@@ -1,29 +1,29 @@
 import express from "express";
-import pkg from "pg";
 import cors from "cors";
 import dotenv from "dotenv";
-import { PrismaClient } from "@prisma/client";
 
-const prisma = new PrismaClient();
+import productRoutes from "./routes/productRoutes.js"; 
+import prisma from "./prismaClient.js"; // centralized prisma
+
 
 dotenv.config();
-const { Pool } = pkg;
 
 const app = express();
 
+// Middleware
 app.use(cors());
 app.use(express.json());
 
-// PostgreSQL connection
-const pool = new Pool({
-  user: process.env.DB_USER,
-  host: process.env.DB_HOST,
-  database: process.env.DB_NAME,
-  password: process.env.DB_PASS,
-  port: process.env.DB_PORT,
+// Routes
+app.use("/api", productRoutes);
+
+// health check route
+app.get("/", (req, res) => {
+  res.send("API is running...");
 });
+
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
+  console.log(`🚀 Server running on http://localhost:${PORT}`);
 });
