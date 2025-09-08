@@ -21,13 +21,13 @@ export const createProduct = async (req, res) => {
     // Just take the first image as the main image
     const mainImageUrl = uploadResults[0].secure_url;
 
-    const product = await prisma.product.create({
+    const product = await prisma.products.create({
       data: {
         name,
         price: parseFloat(price),
         stock: parseInt(stock),
         description,
-        image_url: mainImageUrl,
+        image_urls: uploadResults.map((result) => result.secure_url),
       },
     });
 
@@ -37,3 +37,27 @@ export const createProduct = async (req, res) => {
     res.status(500).json({ error: "Internal server error" });
   }
 };
+ 
+// update products
+export const updateProducts = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const updates = req.body;
+
+    if (!id) {
+      return res.status(400).json({ message: "Invalid product ID" });
+    }
+
+    const updatedProduct = await prisma.products.update({
+      where: { id: Number(id) },
+      data: updates,
+    });
+
+    return res.status(200).json(updatedProduct);
+  } catch (error) {
+    console.error("Error updating product:", error);
+    return res.status(500).json({ message: "Error updating product", error });
+  }
+};
+
+// delete products 
