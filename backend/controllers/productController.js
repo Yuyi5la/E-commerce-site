@@ -60,4 +60,21 @@ export const updateProducts = async (req, res) => {
   }
 };
 
-// delete products 
+// get products 
+export const getProducts = async (req, res) => {
+  try {
+    const allProducts = await prisma.products.findMany(); 
+
+    return res.status(200).json({
+      success: true,
+      data: allProducts,
+    });
+  } catch (error) {
+    console.error("Cannot get products:", error.message);
+
+    return res.status(500).json({
+      success: false,
+      message: "Error getting products",
+    });
+  }
+};
