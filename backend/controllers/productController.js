@@ -78,3 +78,18 @@ export const getProducts = async (req, res) => {
     });
   }
 };
+//Delete products
+export const deleteProduct = async (req,res) => {
+   try {
+      const { id } = req.params;
+  
+        const deletedProduct = await prisma.product.delete({
+      where: { id: Number(id) }, 
+        });
+      if (!product) return res.status(404).json({ message: 'Product not found or already deleted' });
+  
+      res.json({ message: 'Product deleted successfully' });
+    } catch (err) {
+      res.status(500).json({ error: 'Delete failed' });
+    }
+};

@@ -1,6 +1,6 @@
 import express from "express";
 import multer from "multer";
-import { createProduct } from "../controllers/productController.js";
+import { createProduct ,updateProducts ,getProducts, deleteProduct } from "../controllers/productController.js";
 
 const router = express.Router();
 
@@ -9,5 +9,10 @@ const upload = multer({ dest: "uploads/" });
 
 
 router.post("/products", upload.array("files", 5), createProduct);
+router.get ("/products", getProducts)
+router.put("/products/:id" , updateProducts);
+router.delete("/products/:id" , deleteProduct)
+
+
 
 export default router;
