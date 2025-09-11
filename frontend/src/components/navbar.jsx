@@ -1,13 +1,22 @@
 import React, { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
 
 export default function NavbarWithSidePanel() {
   const [open, setOpen] = useState(false);
   const [query, setQuery] = useState("");
-  const items = ["Home", "About", "Shop", "BestSellers", "Contact","Login/Register"];
+
+  const items = [
+    { label: "Home", to: "/" },
+    { label: "About", to: "/about" },
+    { label: "Shop", to: "/shop" },
+    { label: "Best Sellers", to: "/bestsellers" },
+    { label: "Contact", to: "/contact" },
+    { label: "Login/Register", to: "/login" },
+  ];
 
   // filtered items based on search
   const filtered = items.filter((x) =>
-    x.toLowerCase().includes(query.toLowerCase())
+    x.label.toLowerCase().includes(query.toLowerCase())
   );
 
   // close on Escape
@@ -68,8 +77,6 @@ export default function NavbarWithSidePanel() {
           <h2 id="side-panel-title" className="text-lg font-semibold">
             Menu
           </h2>
-
-          {/* Close button */}
           <button
             onClick={() => setOpen(false)}
             className="text-2xl p-1"
@@ -81,7 +88,9 @@ export default function NavbarWithSidePanel() {
 
         {/* Search box */}
         <div className="mb-4">
-          <label className="sr-only" htmlFor="menu-search">Search menu</label>
+          <label className="sr-only" htmlFor="menu-search">
+            Search menu
+          </label>
           <input
             id="menu-search"
             type="search"
@@ -98,18 +107,15 @@ export default function NavbarWithSidePanel() {
             {filtered.length === 0 ? (
               <li className="text-sm text-gray-500">No results</li>
             ) : (
-              filtered.map((label) => (
+              filtered.map(({ label, to }) => (
                 <li key={label}>
-                  <a
-                    href="#"
+                  <Link
+                    to={to}
                     className="block px-2 py-2 rounded hover:bg-black/5"
-                    onClick={() => {
-                      // example click handler: close panel after selection
-                      setOpen(false);
-                    }}
+                    onClick={() => setOpen(false)}
                   >
                     {label}
-                  </a>
+                  </Link>
                 </li>
               ))
             )}
