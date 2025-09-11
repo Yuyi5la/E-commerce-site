@@ -1,7 +1,22 @@
 import React from "react";
 import Marquee from "react-fast-marquee";
+import { useEffect, useState } from "react";
+
+
 
 const Home = () => {
+  
+const [products, setProducts] = useState([]);
+
+  useEffect(() => {
+    fetch("http://localhost:3000/api/products")
+      .then((res) => res.json())
+      .then((data) => setProducts(data.data))
+      .catch((err) => console.error("Error fetching products:", err));
+  }, []);
+
+ 
+
   return (
     <div>
       {/* Hero Section */}
@@ -57,16 +72,19 @@ const Home = () => {
 
 <Marquee speed={30} gradient={false} pauseOnHover className="items-center">
   <div className="flex items-center">
-    <img src="/Grillz 2.jpg" alt="Grillz" className="h-40 w-auto mx-4 rounded-lg shadow-md block" />
-    <img src="/Grillz 6.jpg" alt="Grillz" className="h-40 w-auto mx-4 rounded-lg shadow-md block" />
-    <img src="/grillz 4.jpg" alt="Grillz" className="h-40 w-auto mx-4 rounded-lg shadow-md block" />
-    <img src="/Grillz 5.webp" alt="Grillz" className="h-40 w-auto mx-4 rounded-lg shadow-md block" />
-    <img src="/Grillz 2.jpg" alt="Grillz" className="h-40 w-auto mx-4 rounded-lg shadow-md block" />
-    <img src="/Grillz 6.jpg" alt="Grillz" className="h-40 w-auto mx-4 rounded-lg shadow-md block" />
-    <img src="/grillz 4.jpg" alt="Grillz" className="h-40 w-auto mx-4 rounded-lg shadow-md block" />
-    <img src="/Grillz 5.webp" alt="Grillz" className="h-40 w-auto mx-4 rounded-lg shadow-md block" />
+    {products.map((product) =>
+      product.image_urls.map((url, i) => (
+        <img
+          key={`${product.id}-${i}`}
+          src={url}
+          alt={product.name}
+          className="h-40 w-auto mx-4 rounded-lg shadow-md block"
+        />
+      ))
+    )}
   </div>
 </Marquee>
+
 
       
 
