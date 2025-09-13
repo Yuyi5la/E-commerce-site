@@ -1,5 +1,6 @@
 import prisma from "../prismaClient.js";
 import cloudinary from "../config/cloudinary.js";
+import fs from "fs";
 
 export const createProduct = async (req, res) => {
   const { name, price, stock, description } = req.body;
@@ -14,10 +15,13 @@ export const createProduct = async (req, res) => {
 
   try {
     // Upload all images to Cloudinary
-    const uploadResults = await Promise.all(
-      files.map((file) => cloudinary.uploader.upload(file.path))
-    );
-
+  const uploadResults = await Promise.all(
+  files.map(async (file) => {
+    const result = await cloudinary.uploader.upload(file.path);
+    fs.unlinkSync(file.path); // delete local file after upload
+    return result;
+  })
+);
     // Just take the first image as the main image
     const mainImageUrl = uploadResults[0].secure_url;
 
@@ -37,6 +41,7 @@ export const createProduct = async (req, res) => {
     res.status(500).json({ error: "Internal server error" });
   }
 };
+
  
 // update products
 export const updateProducts = async (req, res) => {
@@ -78,18 +83,31 @@ export const getProducts = async (req, res) => {
     });
   }
 };
-//Delete products
-export const deleteProduct = async (req,res) => {
-   try {
-      const { id } = req.params;
-  
-        const deletedProduct = await prisma.product.delete({
-      where: { id: Number(id) }, 
-        });
-      if (!product) return res.status(404).json({ message: 'Product not found or already deleted' });
-  
-      res.json({ message: 'Product deleted successfully' });
-    } catch (err) {
-      res.status(500).json({ error: 'Delete failed' });
+
+
+// Delete product
+export const deleteProduct = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const product = await prisma.products.findUnique({
+      where: { id: Number(id) },
+    });
+
+    if (!product) {
+      return res
+        .status(404)
+        .json({ message: "Product not found or already deleted" });
     }
+
+    // delete product
+    await prisma.products.delete({
+      where: { id: Number(id) },
+    });
+
+    res.json({ message: "Product deleted successfully" });
+  } catch (err) {
+    console.error("Error deleting product:", err);
+    res.status(500).json({ error: "Delete failed" });
+  }
 };
