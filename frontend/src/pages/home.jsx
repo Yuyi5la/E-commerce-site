@@ -8,14 +8,12 @@ const Home = () => {
   
 const [products, setProducts] = useState([]);
 
-  useEffect(() => {
+    useEffect(() => {
     fetch("http://localhost:3000/api/products")
       .then((res) => res.json())
       .then((data) => setProducts(data.data))
       .catch((err) => console.error("Error fetching products:", err));
   }, []);
-
- 
 
   return (
     <div>
@@ -72,21 +70,27 @@ const [products, setProducts] = useState([]);
 
 <Marquee speed={30} gradient={false} pauseOnHover className="items-center">
   <div className="flex items-center">
-    {products.map((product) =>
-      product.image_urls.map((url, i) => (
-        <img
-          key={`${product.id}-${i}`}
-          src={url}
-          alt={product.name}
-          className="h-40 w-auto mx-4 rounded-lg shadow-md block"
-        />
-      ))
-    )}
+    {products.map((product) => (
+  <div key={product.id} className="flex flex-col items-center mx-4">
+    <img
+      src={product.image_urls[0]}
+      alt={product.name}
+      className="h-40 w-auto rounded-lg shadow-md"
+    />
+    <p className="mt-2 font-semibold text-sm">{product.name}</p>
+    <p className="text-gray-600 text-sm">
+  {new Intl.NumberFormat("en-NG", {
+    style: "currency",
+    currency: "NGN",
+    minimumFractionDigits: 2,
+  }).format(Number(product.price))}
+</p>
+
+  </div>
+))}
   </div>
 </Marquee>
 
-
-      
 
      
     </div>
