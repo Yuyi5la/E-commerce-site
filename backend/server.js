@@ -3,6 +3,7 @@ import cors from "cors";
 import dotenv from "dotenv";
 
 import productRoutes from "./routes/productRoutes.js"; 
+import userRoutes from "./routes/userRoutes.js";
 import prisma from "./prismaClient.js"; // centralized prisma
 
 
@@ -16,6 +17,7 @@ app.use(express.json());
 
 // Routes
 app.use("/api", productRoutes);
+app.use("/api", userRoutes);
 
 // health check route
 app.get("/", (req, res) => {
