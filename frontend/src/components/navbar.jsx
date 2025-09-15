@@ -11,7 +11,7 @@ export default function NavbarWithSidePanel() {
     { label: "Shop", to: "/shop" },
     { label: "Best Sellers", to: "/bestsellers" },
     { label: "Contact", to: "/contact" },
-    { label: "Login/Register", to: "/login" },
+    { label: "Login/Register", to: "/signup" },
   ];
 
   // filtered items based on search

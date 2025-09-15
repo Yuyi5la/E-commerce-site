@@ -1,12 +1,15 @@
 import React from "react";
 import Marquee from "react-fast-marquee";
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+
 
 
 
 const Home = () => {
   
 const [products, setProducts] = useState([]);
+  const navigate = useNavigate();
 
     useEffect(() => {
     fetch("http://localhost:3000/api/products")
@@ -29,7 +32,7 @@ const [products, setProducts] = useState([]);
         <div className="absolute inset-0 flex flex-col items-center justify-center text-white bg-black/40">
           <h1 className="text-4xl md:text-6xl font-bold">Welcome to ChromeHalo</h1>
           <p className="mt-4 text-lg md:text-xl">Trap the stars in your smile</p>
-          <button className="mt-6 px-6 py-3 bg-white text-black font-semibold rounded-lg shadow hover:bg-black hover:text-white">
+          <button  onClick={() => navigate("/shop")} className="mt-6 px-6 py-3 bg-white text-black font-semibold rounded-lg shadow hover:bg-black hover:text-white">
             Shop Now
           </button>
         </div>
