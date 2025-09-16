@@ -7,7 +7,7 @@ import Shop from "./pages/shop";
 import Contact from "./pages/contact";
 import Signup from './pages/signup';
 import Login from "./pages/login";
-
+import Bestseller from './pages/bestseller';
 
 const App = () => {
   const router = createBrowserRouter(
@@ -21,6 +21,7 @@ const App = () => {
         <Route path="contact" element={<Contact />} /> 
         <Route path="signup" element={<Signup />} /> 
         <Route path="/login" element={<Login />} />
+         <Route path="/bestsellers" element={<Bestseller/>} />
      
       </Route>
     )

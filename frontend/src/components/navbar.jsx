@@ -4,6 +4,7 @@ import { Link } from "react-router-dom";
 export default function NavbarWithSidePanel() {
   const [open, setOpen] = useState(false);
   const [query, setQuery] = useState("");
+  const [cartCount, setCartCount] = useState(3); // Example count, replace later with real data
 
   const items = [
     { label: "Home", to: "/" },
@@ -49,8 +50,15 @@ export default function NavbarWithSidePanel() {
         </div>
 
         {/* Right: cart */}
-        <div className="h-10 w-10 flex items-center justify-center text-2xl">
-          🛒
+        <div className="relative h-10 w-10 flex items-center justify-center text-2xl">
+          <Link to="/cart" className="relative">
+            🛒
+            {cartCount > 0 && (
+              <span className="absolute -top-2 -right-2 bg-black text-white text-xs font-bold px-2 py-0.5 rounded-full">
+                {cartCount}
+              </span>
+            )}
+          </Link>
         </div>
       </header>
 

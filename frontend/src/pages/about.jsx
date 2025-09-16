@@ -11,7 +11,7 @@ const About = () => {
           className="w-full h-full object-cover"
         />
         {/* Gradient Overlay */}
-        <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-black/30 to-white/70" />
+        <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-black/30 to-white/50" />
       </div>
 
       {/* Content */}
@@ -39,7 +39,7 @@ const About = () => {
           </p>
 
 
-          <p className="text-2x leading-relaxed text-gray-200">
+          <p className="text-lg leading-relaxed text-gray-200">
             At ChromeHalo, it’s not just about jewelry. It’s{" "}
             <span className="text-white font-semibold">
               about culture, about expression

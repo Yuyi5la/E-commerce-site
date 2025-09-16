@@ -26,7 +26,7 @@ const Shop = () => {
     <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
   {products.map((product) => (
     <div
-      key={product.id || product._id}
+      key={product.id }
       className="rounded-xl shadow-md p-4 hover:shadow-lg transition"
     >
       <img
