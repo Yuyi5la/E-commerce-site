@@ -17,7 +17,7 @@ export const createUser = async (req, res) => {
         name,
         email,
         password: hashedPassword,
-        //role: role || "user", 
+        role: role || "user", 
       },
     });
 
@@ -59,3 +59,50 @@ export const updateUser = async (req, res) => {
     res.status(500).json({ error: "Internal server error" });
   }
 };
+
+export const getUser = async (req,res) => {
+try {
+    const allusers = await prisma.users.findMany(); 
+
+    return res.status(200).json({
+      success: true,
+      data: allusers,
+    });
+  } catch (error) {
+    console.error("Cannot get users:", error.message);
+
+    return res.status(500).json({
+      success: false,
+      message: "Error getting Users",
+    });
+  }
+};
+
+
+export const deleteUser = async (req,res) =>{
+try {
+    const { id } = req.params;
+
+    const user = await prisma.users.findUnique({
+      where: { id: Number(id) },
+    });
+
+    if (!user) {
+      return res
+        .status(404)
+        .json({ message: "user not found or already deleted" });
+    }
+
+    // delete product
+    await prisma.users.delete({
+      where: { id: Number(id) },
+    });
+
+    res.json({ message: "user deleted " });
+  } catch (err) {
+    console.error("Error deleting user:", err);
+    res.status(500).json({ error: "Delete failed" });
+  }
+};
+
+

@@ -1,6 +1,5 @@
 generator client {
   provider = "prisma-client-js"
-  
 }
 
 datasource db {
@@ -9,20 +8,22 @@ datasource db {
 }
 
 model order_items {
-  id         Int       @id @default(autoincrement())
-  order_id   Int?
-  product_id Int?
+  id         Int      @id @default(autoincrement())
+  order_id   Int
+  product_id Int
   quantity   Int
-  orders     orders?   @relation(fields: [order_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  products   products? @relation(fields: [product_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  price      Decimal  @db.Decimal(10, 2)
+  orders     orders   @relation(fields: [order_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  products   products @relation(fields: [product_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
 }
 
 model orders {
   id          Int           @id @default(autoincrement())
-  user_id     Int?
-  created_at  DateTime?     @default(now()) @db.Timestamp(6)
+  user_id     Int
+  created_at  DateTime      @default(now()) @db.Timestamp(6)
+  status      String        @default("cart") @db.VarChar(20)
   order_items order_items[]
-  users       users?        @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  users       users         @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
 }
 
 model products {
@@ -40,5 +41,6 @@ model users {
   name     String?  @db.VarChar(100)
   email    String   @unique @db.VarChar(150)
   password String   @db.VarChar(200)
+  role     String   @default("user") @db.VarChar(50)
   orders   orders[]
 }
