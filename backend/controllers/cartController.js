@@ -1,7 +1,7 @@
 import prisma from "../prismaClient.js";
 
 export const addToCart = async (req, res) => {
-  const userId = req.user.id; // from authMiddleware
+  const userId = req.user.id; 
   const { product_id, quantity } = req.body;
 
   try {
