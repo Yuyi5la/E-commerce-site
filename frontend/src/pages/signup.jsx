@@ -1,9 +1,11 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 const Signup = () => {
   const [form, setForm] = useState({ name: "", email: "", password: "" });
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
+  const navigate = useNavigate();
 
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -12,9 +14,10 @@ const Signup = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
+    setError("");
 
     try {
-      const res = await fetch("http://localhost:3000/api/users", {
+      const res = await fetch("http://localhost:3000/api/auth/register", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(form),
@@ -24,15 +27,13 @@ const Signup = () => {
 
       if (res.ok) {
         alert("User created successfully!");
-        console.log(data);
-        // redirect to login if you want
-        window.location.href = "/login";
+        navigate("/login"); // 👈 redirect after signup
       } else {
-        alert(data.message || "Signup failed");
+        setError(data.message || "Signup failed");
       }
     } catch (err) {
       console.error("Signup error:", err);
-      alert("Something went wrong");
+      setError("Something went wrong. Please try again.");
     } finally {
       setLoading(false);
     }
@@ -44,6 +45,8 @@ const Signup = () => {
         <h2 className="text-3xl font-extrabold text-center mb-6 bg-gradient-to-r from-gray-700 to-gray-900 bg-clip-text text-transparent">
           Create Account
         </h2>
+
+        {error && <p className="text-red-600 text-sm mb-4">{error}</p>}
 
         <form onSubmit={handleSubmit} className="space-y-6">
           <div>

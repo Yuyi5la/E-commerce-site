@@ -28,8 +28,8 @@ const Login = () => {
         localStorage.setItem("token", data.token);
 
         alert("Login successful!");
-        // 👇 redirect user (choose home or chat)
-        navigate("/"); // or navigate("/chat")
+        // 👇 redirect user 
+        navigate("/"); 
       } else {
         alert(data.message || "Login failed");
       }
