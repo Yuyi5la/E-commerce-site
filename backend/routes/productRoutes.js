@@ -1,6 +1,7 @@
 import express from "express";
 import multer from "multer";
 import { createProduct ,updateProducts ,getProducts, deleteProduct } from "../controllers/productController.js";
+import { authMiddleware, adminMiddleware } from "../middlewares/authMiddleware.js";
 
 const router = express.Router();
 
@@ -8,10 +9,10 @@ const router = express.Router();
 const upload = multer({ dest: "uploads/" });
 
 
-router.post("/products", upload.array("files", 5), createProduct);
-router.get ("/products", getProducts)
-router.put("/products/:id" , updateProducts);
-router.delete("/products/:id" , deleteProduct)
+router.post("/products", authMiddleware,adminMiddleware,upload.array("files", 5), createProduct);
+router.get ("/products",authMiddleware, getProducts)
+router.put("/products/:id", authMiddleware,adminMiddleware, updateProducts);
+router.delete("/products/:id",authMiddleware,adminMiddleware, deleteProduct)
 
 
 

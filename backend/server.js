@@ -1,7 +1,7 @@
-import express from "express";
+import  express from "express";
 import cors from "cors";
 import dotenv from "dotenv";
-
+import authRoutes from "./routes/authRoutes.js"
 import productRoutes from "./routes/productRoutes.js"; 
 import userRoutes from "./routes/userRoutes.js";
 import prisma from "./prismaClient.js"; // centralized prisma
@@ -16,8 +16,10 @@ app.use(cors());
 app.use(express.json());
 
 // Routes
+app.use ("/api/auth",authRoutes)
 app.use("/api", productRoutes);
 app.use("/api", userRoutes);
+
 
 // health check route
 app.get("/", (req, res) => {
