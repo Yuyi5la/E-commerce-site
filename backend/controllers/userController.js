@@ -79,6 +79,61 @@ try {
 };
 
 
+export const getMe = async (req, res) => {
+  try {
+    const user = await prisma.users.findUnique({
+      where: { id: req.user.id }, // req.user comes from decoded JWT
+      select: { id: true, name: true, email: true, role: true }
+    });
+
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    res.json({ user });
+  } catch (err) {
+    console.error("Error in getMe:", err);
+    res.status(500).json({ message: "Server error" });
+  }
+};
+
+
+export const updateUserRole = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { role } = req.body;
+
+    if (!role) {
+      return res.status(400).json({ message: "Role is required" });
+    }
+
+    const user = await prisma.users.findUnique({
+      where: { id: Number(id) },
+    });
+
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    const updatedUser = await prisma.users.update({
+      where: { id: Number(id) },
+      data: { role },
+      select: { id: true, name: true, email: true, role: true },
+    });
+
+    res.status(200).json({
+      success: true,
+      message: "User role updated successfully",
+      user: updatedUser,
+    });
+  } catch (err) {
+    console.error("Error updating user role:", err);
+    res.status(500).json({ error: "Server error" });
+  }
+};
+
+
+
 export const deleteUser = async (req,res) =>{
 try {
     const { id } = req.params;

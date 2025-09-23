@@ -2,7 +2,6 @@ import jwt from "jsonwebtoken";
 
 export const authMiddleware = (req, res, next) => {
   try {
-    // Get token from the "Authorization" header
     const authHeader = req.headers["authorization"];
     const token = authHeader && authHeader.split(" ")[1]; // "Bearer token"
 
@@ -13,14 +12,13 @@ export const authMiddleware = (req, res, next) => {
     // Verify token
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
-    // Attach user info from token to request
+    // Attach user info from token
     req.user = decoded;
 
-    // Move on to the next middleware/controller
     next();
   } catch (err) {
     console.error("Auth error:", err);
-    return res.status(401).json({ message: "Token is not valid" });
+    res.status(401).json({ message: "Token is not valid" });
   }
 };
 

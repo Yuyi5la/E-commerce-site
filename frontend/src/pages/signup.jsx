@@ -27,7 +27,7 @@ const Signup = () => {
 
       if (res.ok) {
         alert("User created successfully!");
-        navigate("/login"); // 👈 redirect after signup
+        navigate("/login"); 
       } else {
         setError(data.message || "Signup failed");
       }

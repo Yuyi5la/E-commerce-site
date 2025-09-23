@@ -24,12 +24,18 @@ const Login = () => {
       const data = await res.json();
 
       if (res.ok) {
-        // store token or user info
+        // store token + user info
         localStorage.setItem("token", data.token);
+        localStorage.setItem("user", JSON.stringify(data.user));
 
         alert("Login successful!");
-        // 👇 redirect user 
-        navigate("/"); 
+
+        // redirect based on role
+        if (data.user.role === "admin") {
+          navigate("/admin");
+        } else {
+          navigate("/profile");
+        }
       } else {
         alert(data.message || "Login failed");
       }

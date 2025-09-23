@@ -4,6 +4,7 @@ import dotenv from "dotenv";
 import authRoutes from "./routes/authRoutes.js"
 import productRoutes from "./routes/productRoutes.js"; 
 import userRoutes from "./routes/userRoutes.js";
+import cartRoutes from "./routes/cartRoutes.js"
 import prisma from "./prismaClient.js"; // centralized prisma
 
 
@@ -19,6 +20,7 @@ app.use(express.json());
 app.use ("/api/auth",authRoutes)
 app.use("/api", productRoutes);
 app.use("/api", userRoutes);
+app.use("/api", cartRoutes);
 
 
 // health check route
