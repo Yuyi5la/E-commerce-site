@@ -1,5 +1,11 @@
 import React, { useEffect } from "react";
-import { Route, createBrowserRouter, createRoutesFromElements, RouterProvider } from "react-router-dom";
+import {
+  Route,
+  createBrowserRouter,
+  createRoutesFromElements,
+  RouterProvider,
+} from "react-router-dom";
+
 import RootLayout from "./layout/RootLayout";
 import Home from "./pages/home";
 import About from "./pages/about";
@@ -10,6 +16,9 @@ import Login from "./pages/login";
 import Checkout from "./pages/checkout";
 import UserProfile from "./pages/UserProfile";
 import AdminDashboard from "./pages/AdminDashboard";
+import ManageUsers from "./pages/ManageUsers";
+import ManageProducts from "./pages/ManageProducts";
+
 import ProtectedRoute from "./utils/ProtectedRoute";
 import { isTokenExpired } from "./utils/auth";
 
@@ -25,6 +34,7 @@ const App = () => {
   const router = createBrowserRouter(
     createRoutesFromElements(
       <Route path="/" element={<RootLayout />}>
+        {/* Public Routes */}
         <Route index element={<Home />} />
         <Route path="about" element={<About />} />
         <Route path="shop" element={<Shop />} />
@@ -32,7 +42,6 @@ const App = () => {
         <Route path="signup" element={<Signup />} />
         <Route path="login" element={<Login />} />
         <Route path="checkout" element={<Checkout />} />
-       
 
         {/* Protected Routes */}
         <Route
@@ -43,14 +52,20 @@ const App = () => {
             </ProtectedRoute>
           }
         />
+
+        {/* Admin Routes with Nested Pages */}
         <Route
           path="admin"
           element={
             <ProtectedRoute allowedRole="admin">
-              <AdminDashboard />
+              <AdminDashboard /> {/* has <Outlet /> inside */}
             </ProtectedRoute>
           }
-        />
+        >
+          <Route path="users" element={<ManageUsers />} />
+         <Route path="products" element={<ManageProducts />} />
+          <Route path="orders" element={<div>Orders Page</div>} />
+        </Route>
       </Route>
     )
   );

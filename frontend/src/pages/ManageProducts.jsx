@@ -1,0 +1,160 @@
+import React, { useState, useEffect } from "react";
+
+export default function ManageProducts() {
+  const [products, setProducts] = useState([]);
+  const [form, setForm] = useState({
+    name: "",
+    price: "",
+    stock: "",
+    description: "",
+    images: null,
+  });
+
+  // Fetch all products
+  const fetchProducts = async () => {
+    try {
+      const res = await fetch("http://localhost:3000/api/products");
+      const data = await res.json();
+      if (data.success) {
+        setProducts(data.data);
+      }
+    } catch (err) {
+      console.error("Error fetching products:", err);
+    }
+  };
+
+  useEffect(() => {
+    fetchProducts();
+  }, []);
+
+  // Handle form change
+  const handleChange = (e) => {
+    const { name, value, files } = e.target;
+    if (files) {
+      setForm({ ...form, images: files });
+    } else {
+      setForm({ ...form, [name]: value });
+    }
+  };
+
+  // Create product
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    const formData = new FormData();
+    Object.keys(form).forEach((key) => {
+      if (key === "images" && form.images) {
+        for (let i = 0; i < form.images.length; i++) {
+          formData.append("images", form.images[i]);
+        }
+      } else {
+        formData.append(key, form[key]);
+      }
+    });
+
+    try {
+      const res = await fetch("http://localhost:3000/api/products", {
+        method: "POST",
+        body: formData,
+      });
+      if (res.ok) {
+        setForm({ name: "", price: "", stock: "", description: "", images: null });
+        fetchProducts();
+      }
+    } catch (err) {
+      console.error("Error creating product:", err);
+    }
+  };
+
+  // Delete product
+  const handleDelete = async (id) => {
+    try {
+      const res = await fetch(`http://localhost:3000/api/products/${id}`, {
+        method: "DELETE",
+      });
+      if (res.ok) {
+        fetchProducts();
+      }
+    } catch (err) {
+      console.error("Error deleting product:", err);
+    }
+  };
+
+  return (
+    <div className="max-w-6xl mx-auto px-4 py-8">
+      <h2 className="text-2xl font-bold mb-6">Manage Products</h2>
+
+      {/* Create Product Form */}
+      <form onSubmit={handleSubmit} className="bg-white p-6 rounded-lg shadow mb-10">
+        <h3 className="text-lg font-semibold mb-4">Add New Product</h3>
+        <input
+          type="text"
+          name="name"
+          placeholder="Product Name"
+          value={form.name}
+          onChange={handleChange}
+          className="w-full p-2 border rounded mb-3"
+        />
+        <input
+          type="number"
+          name="price"
+          placeholder="Price"
+          value={form.price}
+          onChange={handleChange}
+          className="w-full p-2 border rounded mb-3"
+        />
+        <input
+          type="number"
+          name="stock"
+          placeholder="Stock"
+          value={form.stock}
+          onChange={handleChange}
+          className="w-full p-2 border rounded mb-3"
+        />
+        <textarea
+          name="description"
+          placeholder="Description"
+          value={form.description}
+          onChange={handleChange}
+          className="w-full p-2 border rounded mb-3"
+        />
+        <input
+          type="file"
+          name="images"
+          multiple
+          onChange={handleChange}
+          className="mb-3"
+        />
+        <button
+          type="submit"
+          className="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700"
+        >
+          Create Product
+        </button>
+      </form>
+
+      {/* List Products */}
+      <h3 className="text-lg font-semibold mb-4">All Products</h3>
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        {products.map((p) => (
+          <div key={p.id} className="border p-4 rounded shadow bg-white">
+            <img
+              src={p.image_urls?.[0]}
+              alt={p.name}
+              className="w-full h-40 object-cover rounded mb-2"
+            />
+            <h4 className="font-bold">{p.name}</h4>
+            <p>${p.price}</p>
+            <p>Stock: {p.stock}</p>
+            <button
+              onClick={() => handleDelete(p.id)}
+              className="mt-3 bg-red-500 text-white py-1 px-3 rounded hover:bg-red-600"
+            >
+              Delete
+            </button>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}

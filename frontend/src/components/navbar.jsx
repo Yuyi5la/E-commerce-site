@@ -1,6 +1,7 @@
+// src/components/NavbarWithSidePanel.jsx
 import React, { useState, useEffect } from "react";
-import { Link, useNavigate } from "react-router-dom";
-import { isTokenExpired } from "../utils/auth"; 
+import { Link, useNavigate, useLocation } from "react-router-dom";
+import { isTokenExpired } from "../utils/auth";
 
 export default function NavbarWithSidePanel() {
   const [menuOpen, setMenuOpen] = useState(false);
@@ -8,6 +9,7 @@ export default function NavbarWithSidePanel() {
   const [query, setQuery] = useState("");
   const [cartItems, setCartItems] = useState([]);
   const navigate = useNavigate();
+  const location = useLocation();
 
   const items = [
     { label: "Home", to: "/" },
@@ -15,25 +17,36 @@ export default function NavbarWithSidePanel() {
     { label: "Shop", to: "/shop" },
     { label: "Contact", to: "/contact" },
     { label: "Login/Register", to: "/signup" },
-  
   ];
 
   const filtered = items.filter((x) =>
     x.label.toLowerCase().includes(query.toLowerCase())
   );
 
+  // Open cart if URL contains ?cart=open (used by UserProfile redirect)
+  useEffect(() => {
+    const params = new URLSearchParams(location.search);
+    if (params.get("cart") === "open") {
+      setCartOpen(true);
+    }
+  }, [location]);
+
+  // Fetch cart for logged-in user
   useEffect(() => {
     const fetchCart = async () => {
       const token = localStorage.getItem("token");
 
-      // check token before hitting backend
+      // No valid token -> guest view (empty cart)
       if (!token || isTokenExpired(token)) {
-         localStorage.removeItem("token");
-         console.warn("No valid token, showing empty cart for guest");
-         setCartItems([]);
-         return; 
-                 }
-
+        if (token && isTokenExpired(token)) {
+          // token expired — remove it
+          localStorage.removeItem("token");
+          localStorage.removeItem("user");
+          console.warn("Expired token removed.");
+        }
+        setCartItems([]);
+        return;
+      }
 
       try {
         const res = await fetch("http://localhost:3000/api/cart", {
@@ -43,35 +56,42 @@ export default function NavbarWithSidePanel() {
           },
         });
 
-        if (!res.ok) throw new Error("Failed to fetch cart");
+        // handle auth errors gracefully
+        if (res.status === 401) {
+          console.warn("Unauthorized fetching cart — clearing token and showing empty cart");
+          localStorage.removeItem("token");
+          localStorage.removeItem("user");
+          setCartItems([]);
+          return;
+        }
+
+        if (!res.ok) throw new Error(`Failed to fetch cart (${res.status})`);
 
         const data = await res.json();
-        setCartItems(data.order_items || []);
+        // backend may return cart object with order_items
+        const items = data?.order_items || data?.data?.order_items || data?.items || [];
+        setCartItems(Array.isArray(items) ? items : []);
       } catch (err) {
         console.error("Error fetching cart:", err);
+        setCartItems([]); // fail-safe
       }
     };
 
     fetchCart();
-  }, [navigate]);
+  }, []); // run once on mount
 
-  // close on Escape
-  useEffect(() => {
-    function onKey(e) {
-      if (e.key === "Escape") {
-        setMenuOpen(false);
-        setCartOpen(false);
-      }
-    }
-    window.addEventListener("keydown", onKey);
-    return () => window.removeEventListener("keydown", onKey);
-  }, []);
-
-  const cartCount = cartItems.reduce((acc, i) => acc + i.quantity, 0);
+  // helpers
+  const distinctCount = cartItems.length; // number of product lines
+  const totalQuantity = cartItems.reduce(
+    (acc, i) => acc + (Number(i.quantity) || 0),
+    0
+  ); // sum of quantities
   const cartTotal = cartItems.reduce(
-    (acc, i) => acc + i.price * i.quantity,
+    (acc, i) => acc + (Number(i.price) || 0) * (Number(i.quantity) || 0),
     0
   );
+
+  const formatNaira = (val) => `₦${Number(val).toLocaleString()}`;
 
   return (
     <>
@@ -97,11 +117,14 @@ export default function NavbarWithSidePanel() {
         <div
           className="relative h-10 w-10 flex items-center justify-center text-2xl cursor-pointer"
           onClick={() => setCartOpen(true)}
+          aria-label="Open cart"
+          role="button"
         >
           🛒
-          {cartCount > 0 && (
+          {/* badge shows distinct products (lines). If you prefer quantity, swap to totalQuantity */}
+          {distinctCount > 0 && (
             <span className="absolute -top-2 -right-2 bg-black text-white text-xs font-bold px-2 py-0.5 rounded-full">
-              {cartCount}
+              {distinctCount}
             </span>
           )}
         </div>
@@ -164,77 +187,75 @@ export default function NavbarWithSidePanel() {
       </aside>
 
       {/* Side panel - RIGHT cart */}
-   {/* Side panel - RIGHT cart */}
-<aside
-  className={`fixed inset-y-0 right-0 z-20 transform bg-white border-l border-black p-6
-  transition-transform duration-300 ease-in-out
-  ${cartOpen ? "translate-x-0" : "translate-x-full"}
-  w-3/4 sm:w-1/2 md:w-2/5 lg:w-1/3 flex flex-col`}
->
-  <div className="flex items-center justify-between mb-4">
-    <h2 className="text-lg font-semibold">Your Cart</h2>
-    <button onClick={() => setCartOpen(false)} className="text-2xl p-1">
-      ✕
-    </button>
-  </div>
+      <aside
+        className={`fixed inset-y-0 right-0 z-20 transform bg-white border-l border-black p-6
+        transition-transform duration-300 ease-in-out
+        ${cartOpen ? "translate-x-0" : "translate-x-full"}
+        w-80 sm:w-96 flex flex-col`}
+      >
+        <div className="flex items-center justify-between mb-4">
+          <h2 className="text-lg font-semibold">Your Cart</h2>
+          <button onClick={() => setCartOpen(false)} className="text-2xl p-1">
+            ✕
+          </button>
+        </div>
 
-  {/* Cart Items - scrollable */}
-  <div className="flex-1 overflow-y-auto space-y-4">
-    {cartItems.length === 0 ? (
-      <p className="text-gray-500">Cart is empty 💤</p>
-    ) : (
-      cartItems.map((item) => (
-        <div
-          key={item.id}
-          className="flex items-center justify-between border-b pb-3"
-        >
-          <div className="flex items-center gap-3">
-            <img
-              src={item.products.image_urls[0]}
-              alt={item.products.name}
-              className="w-14 h-14 object-cover rounded"
-            />
-            <div>
-              <p className="font-semibold">{item.products.name}</p>
-              <p className="text-sm text-gray-500">
-                {item.quantity} × ₦{item.price}
-              </p>
+        {/* Cart Items - scrollable */}
+        <div className="flex-1 overflow-y-auto space-y-4">
+          {cartItems.length === 0 ? (
+            <p className="text-gray-500">Cart is empty 💤</p>
+          ) : (
+            cartItems.map((item) => (
+              <div
+                key={item.id}
+                className="flex items-center justify-between border-b pb-3"
+              >
+                <div className="flex items-center gap-3">
+                  <img
+                    src={item.products?.image_urls?.[0] || "/placeholder.png"}
+                    alt={item.products?.name || "Product"}
+                    className="w-14 h-14 object-cover rounded"
+                  />
+                  <div>
+                    <p className="font-semibold">{item.products?.name || "Product"}</p>
+                    <p className="text-sm text-gray-500">
+                      Qty: {item.quantity} × {formatNaira(item.price)}
+                    </p>
+                  </div>
+                </div>
+                <p className="font-bold text-gray-700">
+                  {formatNaira((Number(item.price) || 0) * (Number(item.quantity) || 0))}
+                </p>
+              </div>
+            ))
+          )}
+        </div>
+
+        {/* Footer: subtotal, divider, checkout */}
+        {cartItems.length > 0 && (
+          <div className="mt-4">
+            <div className="flex justify-between text-gray-700 text-base mb-2">
+              <span className="text-sm text-gray-600">Subtotal ({distinctCount} items, {totalQuantity} qty)</span>
+              <span className="font-medium">{formatNaira(cartTotal)}</span>
+            </div>
+
+            <div className="border-t my-3" />
+
+            <div className="flex justify-center">
+              {/* not full width, centered button */}
+              <button
+                onClick={() => {
+                  setCartOpen(false);
+                  navigate("/checkout");
+                }}
+                className="w-40 bg-black text-white px-4 py-2 rounded-lg hover:bg-gray-800"
+              >
+                Checkout
+              </button>
             </div>
           </div>
-          <p className="font-bold text-gray-700">
-            ₦{item.price * item.quantity}
-          </p>
-        </div>
-      ))
-    )}
-  </div>
-
- {/* Divider + Footer section */}
-{cartItems.length > 0 && (
-  <div className="mt-4">
-    {/* Subtotal above divider */}
-    <div className="flex justify-between text-gray-700 text-base mb-2">
-      <span>Subtotal</span>
-      <span>₦{cartTotal}</span>
-    </div>
-
-    {/* Divider */}
-    <div className="border-t my-3"></div>
-
-    {/* Checkout button */}
-    <div className="flex justify-center">
-      <button
-        onClick={() => navigate("/checkout")}
-        className="w-full bg-black text-white px-6 py-2 rounded-lg hover:bg-gray-800"
-      >
-        Checkout
-      </button>
-    </div>
-  </div>
-)}
-
-</aside>
-
+        )}
+      </aside>
     </>
   );
 }
