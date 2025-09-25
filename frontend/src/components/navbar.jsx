@@ -10,6 +10,7 @@ export default function NavbarWithSidePanel() {
   const [cartItems, setCartItems] = useState([]);
   const navigate = useNavigate();
   const location = useLocation();
+  const API_URL = import.meta.env.VITE_API_URL;
 
   const items = [
     { label: "Home", to: "/" },
@@ -49,7 +50,7 @@ export default function NavbarWithSidePanel() {
       }
 
       try {
-        const res = await fetch("http://localhost:3000/api/cart", {
+        const res = await fetch(`${API_URL}/api/cart`, {
           headers: {
             "Content-Type": "application/json",
             Authorization: `Bearer ${token}`,

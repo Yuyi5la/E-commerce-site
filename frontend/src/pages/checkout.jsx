@@ -4,6 +4,8 @@ import { useNavigate } from "react-router-dom";
 export default function Checkout() {
   const [cartItems, setCartItems] = useState([]);
   const navigate = useNavigate();
+  const API_URL = import.meta.env.VITE_API_URL;
+
 
   useEffect(() => {
     const fetchCart = async () => {
@@ -11,7 +13,7 @@ export default function Checkout() {
       if (!token) return; // no cart if not logged in
 
       try {
-        const res = await fetch("http://localhost:3000/api/cart", {
+        const res = await fetch(`${API_URL}/api/cart`, {
           headers: {
             "Content-Type": "application/json",
             Authorization: `Bearer ${token}`,

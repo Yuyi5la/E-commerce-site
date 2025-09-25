@@ -10,9 +10,11 @@ const Home = () => {
   
 const [products, setProducts] = useState([]);
   const navigate = useNavigate();
+  const API_URL = import.meta.env.VITE_API_URL;
+
 
     useEffect(() => {
-    fetch("http://localhost:3000/api/products")
+    fetch(`${API_URL}/api/products`)
       .then((res) => res.json())
       .then((data) => setProducts(data.data))
       .catch((err) => console.error("Error fetching products:", err));

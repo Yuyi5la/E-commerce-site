@@ -9,11 +9,12 @@ export default function ManageProducts() {
     description: "",
     images: null,
   });
-
+ const API_URL = import.meta.env.VITE_API_URL;
+ 
   // Fetch all products
   const fetchProducts = async () => {
     try {
-      const res = await fetch("http://localhost:3000/api/products");
+      const res = await fetch(`${API_URL}/api/products`);
       const data = await res.json();
       if (data.success) {
         setProducts(data.data);
@@ -53,7 +54,7 @@ export default function ManageProducts() {
     });
 
     try {
-      const res = await fetch("http://localhost:3000/api/products", {
+      const res = await fetch(`${API_URL}/api/products`, {
         method: "POST",
         body: formData,
       });
@@ -69,7 +70,7 @@ export default function ManageProducts() {
   // Delete product
   const handleDelete = async (id) => {
     try {
-      const res = await fetch(`http://localhost:3000/api/products/${id}`, {
+      const res = await fetch(`${API_URL}/api/products/${id}`, {
         method: "DELETE",
       });
       if (res.ok) {
@@ -144,7 +145,7 @@ export default function ManageProducts() {
               className="w-full h-40 object-cover rounded mb-2"
             />
             <h4 className="font-bold">{p.name}</h4>
-            <p>${p.price}</p>
+            <p>₦{p.price}</p>
             <p>Stock: {p.stock}</p>
             <button
               onClick={() => handleDelete(p.id)}

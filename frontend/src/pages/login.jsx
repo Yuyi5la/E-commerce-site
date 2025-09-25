@@ -5,6 +5,7 @@ const Login = () => {
   const [form, setForm] = useState({ email: "", password: "" });
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
+  const API_URL = import.meta.env.VITE_API_URL;
 
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -15,7 +16,7 @@ const Login = () => {
     setLoading(true);
 
     try {
-      const res = await fetch("http://localhost:3000/api/auth/login", {
+      const res = await fetch(`${API_URL}/auth/login`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(form),

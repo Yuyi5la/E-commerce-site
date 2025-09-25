@@ -71,8 +71,9 @@ export const getCart = async (req, res) => {
   }
 };
 
+
 export const updateCartItem = async (req, res) => {
-  const userId = req.user.id; // logged in user
+  const userId = req.user.id; 
   const { id } = req.params; // cart item id
   const { quantity } = req.body; // new quantity
 

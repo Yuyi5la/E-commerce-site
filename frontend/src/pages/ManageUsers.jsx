@@ -3,12 +3,14 @@ import React, { useEffect, useState } from "react";
 export default function ManageUsers() {
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
+  const API_URL = import.meta.env.VITE_API_URL;
+
 
   useEffect(() => {
     const fetchUsers = async () => {
       try {
         const token = localStorage.getItem("token");
-        const res = await fetch("http://localhost:3000/api/users", {
+        const res = await fetch(`${API_URL}/api/users`, {
           headers: {
             Authorization: `Bearer ${token}`,
           },
@@ -27,7 +29,7 @@ export default function ManageUsers() {
   const updateRole = async (id, role) => {
     try {
       const token = localStorage.getItem("token");
-      const res = await fetch(`http://localhost:3000/api/users/${id}`, {
+      const res = await fetch(`${API_URL}/api/users/${id}`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",

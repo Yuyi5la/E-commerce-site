@@ -3,9 +3,11 @@ import React, { useEffect, useState } from "react";
 const Shop = () => {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
+  const API_URL = import.meta.env.VITE_API_URL;
+
 
   useEffect(() => {
-    fetch("http://localhost:3000/api/products")
+    fetch(`${API_URL}/api/products`)
       .then((res) => res.json())
       .then((data) => {
         setProducts(data.data || []);
@@ -26,7 +28,7 @@ const Shop = () => {
     }
 
     try {
-      const res = await fetch("http://localhost:3000/api/cart", {
+      const res = await fetch(`${API_URL}/api/cart`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
