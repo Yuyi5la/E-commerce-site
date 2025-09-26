@@ -17,12 +17,54 @@ export default function NavbarWithSidePanel() {
     { label: "About", to: "/about" },
     { label: "Shop", to: "/shop" },
     { label: "Contact", to: "/contact" },
-    { label: "Login/Register", to: "/signup" },
+    { label: "Login/Register", to: "/login" },
   ];
 
   const filtered = items.filter((x) =>
     x.label.toLowerCase().includes(query.toLowerCase())
   );
+
+  // Fetch cart for logged-in user
+  const fetchCart = async () => {
+    const token = localStorage.getItem("token");
+
+    if (!token || isTokenExpired(token)) {
+      if (token && isTokenExpired(token)) {
+        localStorage.removeItem("token");
+        localStorage.removeItem("user");
+        console.warn("Expired token removed.");
+      }
+      setCartItems([]);
+      return;
+    }
+
+    try {
+      const res = await fetch(`${API_URL}/api/cart`, {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      if (res.status === 401) {
+        console.warn("Unauthorized fetching cart — clearing token and showing empty cart");
+        localStorage.removeItem("token");
+        localStorage.removeItem("user");
+        setCartItems([]);
+        return;
+      }
+
+      if (!res.ok) throw new Error(`Failed to fetch cart (${res.status})`);
+
+      const data = await res.json();
+      const items =
+        data?.order_items || data?.data?.order_items || data?.items || [];
+      setCartItems(Array.isArray(items) ? items : []);
+    } catch (err) {
+      console.error("Error fetching cart:", err);
+      setCartItems([]); // fail-safe
+    }
+  };
 
   // Open cart if URL contains ?cart=open (used by UserProfile redirect)
   useEffect(() => {
@@ -32,61 +74,32 @@ export default function NavbarWithSidePanel() {
     }
   }, [location]);
 
-  // Fetch cart for logged-in user
+  // Run once on mount + listen for login/logout events
   useEffect(() => {
-    const fetchCart = async () => {
-      const token = localStorage.getItem("token");
+    fetchCart();
 
-      // No valid token -> guest view (empty cart)
-      if (!token || isTokenExpired(token)) {
-        if (token && isTokenExpired(token)) {
-          // token expired — remove it
-          localStorage.removeItem("token");
-          localStorage.removeItem("user");
-          console.warn("Expired token removed.");
-        }
-        setCartItems([]);
-        return;
-      }
-
-      try {
-        const res = await fetch(`${API_URL}/api/cart`, {
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-        });
-
-        // handle auth errors gracefully
-        if (res.status === 401) {
-          console.warn("Unauthorized fetching cart — clearing token and showing empty cart");
-          localStorage.removeItem("token");
-          localStorage.removeItem("user");
-          setCartItems([]);
-          return;
-        }
-
-        if (!res.ok) throw new Error(`Failed to fetch cart (${res.status})`);
-
-        const data = await res.json();
-        // backend may return cart object with order_items
-        const items = data?.order_items || data?.data?.order_items || data?.items || [];
-        setCartItems(Array.isArray(items) ? items : []);
-      } catch (err) {
-        console.error("Error fetching cart:", err);
-        setCartItems([]); // fail-safe
-      }
+    const handleLogin = () => {
+      fetchCart();
+    };
+    const handleLogout = () => {
+      setCartItems([]);
     };
 
-    fetchCart();
-  }, []); // run once on mount
+    window.addEventListener("login", handleLogin);
+    window.addEventListener("logout", handleLogout);
+
+    return () => {
+      window.removeEventListener("login", handleLogin);
+      window.removeEventListener("logout", handleLogout);
+    };
+  }, []);
 
   // helpers
-  const distinctCount = cartItems.length; // number of product lines
+  const distinctCount = cartItems.length;
   const totalQuantity = cartItems.reduce(
     (acc, i) => acc + (Number(i.quantity) || 0),
     0
-  ); // sum of quantities
+  );
   const cartTotal = cartItems.reduce(
     (acc, i) => acc + (Number(i.price) || 0) * (Number(i.quantity) || 0),
     0
@@ -122,7 +135,6 @@ export default function NavbarWithSidePanel() {
           role="button"
         >
           🛒
-          {/* badge shows distinct products (lines). If you prefer quantity, swap to totalQuantity */}
           {distinctCount > 0 && (
             <span className="absolute -top-2 -right-2 bg-black text-white text-xs font-bold px-2 py-0.5 rounded-full">
               {distinctCount}
@@ -218,14 +230,18 @@ export default function NavbarWithSidePanel() {
                     className="w-14 h-14 object-cover rounded"
                   />
                   <div>
-                    <p className="font-semibold">{item.products?.name || "Product"}</p>
+                    <p className="font-semibold">
+                      {item.products?.name || "Product"}
+                    </p>
                     <p className="text-sm text-gray-500">
                       Qty: {item.quantity} × {formatNaira(item.price)}
                     </p>
                   </div>
                 </div>
                 <p className="font-bold text-gray-700">
-                  {formatNaira((Number(item.price) || 0) * (Number(item.quantity) || 0))}
+                  {formatNaira(
+                    (Number(item.price) || 0) * (Number(item.quantity) || 0)
+                  )}
                 </p>
               </div>
             ))
@@ -236,14 +252,15 @@ export default function NavbarWithSidePanel() {
         {cartItems.length > 0 && (
           <div className="mt-4">
             <div className="flex justify-between text-gray-700 text-base mb-2">
-              <span className="text-sm text-gray-600">Subtotal ({distinctCount} items, {totalQuantity} qty)</span>
+              <span className="text-sm text-gray-600">
+                Subtotal ({distinctCount} items, {totalQuantity} qty)
+              </span>
               <span className="font-medium">{formatNaira(cartTotal)}</span>
             </div>
 
             <div className="border-t my-3" />
 
             <div className="flex justify-center">
-              {/* not full width, centered button */}
               <button
                 onClick={() => {
                   setCartOpen(false);

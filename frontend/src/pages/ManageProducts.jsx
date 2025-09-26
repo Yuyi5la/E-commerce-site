@@ -9,8 +9,11 @@ export default function ManageProducts() {
     description: "",
     images: null,
   });
- const API_URL = import.meta.env.VITE_API_URL;
- 
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
+
+  const API_URL = import.meta.env.VITE_API_URL;
+
   // Fetch all products
   const fetchProducts = async () => {
     try {
@@ -18,6 +21,8 @@ export default function ManageProducts() {
       const data = await res.json();
       if (data.success) {
         setProducts(data.data);
+      } else {
+        console.error("Failed to load products:", data.message);
       }
     } catch (err) {
       console.error("Error fetching products:", err);
@@ -41,12 +46,14 @@ export default function ManageProducts() {
   // Create product
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setLoading(true);
+    setError("");
 
     const formData = new FormData();
     Object.keys(form).forEach((key) => {
       if (key === "images" && form.images) {
         for (let i = 0; i < form.images.length; i++) {
-          formData.append("images", form.images[i]);
+          formData.append("files", form.images[i]); // ✅ match Multer field name
         }
       } else {
         formData.append(key, form[key]);
@@ -54,28 +61,64 @@ export default function ManageProducts() {
     });
 
     try {
+      const token = localStorage.getItem("token");
+      if (!token) {
+        setError("You must be logged in as admin to create products");
+        setLoading(false);
+        return;
+      }
+
       const res = await fetch(`${API_URL}/api/products`, {
         method: "POST",
+        headers: {
+          Authorization: `Bearer ${token}`, // ✅ admin auth
+        },
         body: formData,
       });
+
       if (res.ok) {
-        setForm({ name: "", price: "", stock: "", description: "", images: null });
+        setForm({
+          name: "",
+          price: "",
+          stock: "",
+          description: "",
+          images: null,
+        });
         fetchProducts();
+      } else {
+        const errMsg = await res.text();
+        setError(`Create failed: ${errMsg}`);
       }
     } catch (err) {
       console.error("Error creating product:", err);
+      setError("Something went wrong while creating product");
+    } finally {
+      setLoading(false);
     }
   };
 
   // Delete product
   const handleDelete = async (id) => {
     try {
+      const token = localStorage.getItem("token");
+      if (!token) {
+        alert("You must be logged in as admin to delete products");
+        return;
+      }
+
       const res = await fetch(`${API_URL}/api/products/${id}`, {
         method: "DELETE",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
       });
-      if (res.ok) {
-        fetchProducts();
+
+      if (!res.ok) {
+        const errMsg = await res.text();
+        throw new Error(`Delete failed: ${errMsg}`);
       }
+
+      fetchProducts(); // refresh list
     } catch (err) {
       console.error("Error deleting product:", err);
     }
@@ -86,8 +129,14 @@ export default function ManageProducts() {
       <h2 className="text-2xl font-bold mb-6">Manage Products</h2>
 
       {/* Create Product Form */}
-      <form onSubmit={handleSubmit} className="bg-white p-6 rounded-lg shadow mb-10">
+      <form
+        onSubmit={handleSubmit}
+        className="bg-white p-6 rounded-lg shadow mb-10"
+      >
         <h3 className="text-lg font-semibold mb-4">Add New Product</h3>
+
+        {error && <p className="text-red-600 mb-3">{error}</p>}
+
         <input
           type="text"
           name="name"
@@ -95,6 +144,7 @@ export default function ManageProducts() {
           value={form.name}
           onChange={handleChange}
           className="w-full p-2 border rounded mb-3"
+          required
         />
         <input
           type="number"
@@ -103,6 +153,7 @@ export default function ManageProducts() {
           value={form.price}
           onChange={handleChange}
           className="w-full p-2 border rounded mb-3"
+          required
         />
         <input
           type="number"
@@ -111,6 +162,7 @@ export default function ManageProducts() {
           value={form.stock}
           onChange={handleChange}
           className="w-full p-2 border rounded mb-3"
+          required
         />
         <textarea
           name="description"
@@ -118,6 +170,7 @@ export default function ManageProducts() {
           value={form.description}
           onChange={handleChange}
           className="w-full p-2 border rounded mb-3"
+          required
         />
         <input
           type="file"
@@ -128,9 +181,10 @@ export default function ManageProducts() {
         />
         <button
           type="submit"
+          disabled={loading}
           className="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700"
         >
-          Create Product
+          {loading ? "Creating..." : "Create Product"}
         </button>
       </form>
 

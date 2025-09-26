@@ -16,7 +16,7 @@ const Login = () => {
     setLoading(true);
 
     try {
-      const res = await fetch(`${API_URL}/auth/login`, {
+      const res = await fetch(`${API_URL}/api/auth/login`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(form),
@@ -25,9 +25,12 @@ const Login = () => {
       const data = await res.json();
 
       if (res.ok) {
-        // store token + user info
+        //  store token + user info
         localStorage.setItem("token", data.token);
         localStorage.setItem("user", JSON.stringify(data.user));
+
+        // fire login event so Navbar (or cart) can update immediately
+        window.dispatchEvent(new Event("login"));
 
         alert("Login successful!");
 
@@ -52,7 +55,7 @@ const Login = () => {
     <section className="min-h-screen flex items-center justify-center bg-gradient-to-br from-white via-gray-300 to-gray-400 px-6">
       <div className="w-full max-w-md bg-white/80 backdrop-blur-md p-8 rounded-2xl shadow-2xl border border-gray-200">
         <h2 className="text-3xl font-extrabold text-center mb-6 bg-gradient-to-r from-gray-700 to-gray-900 bg-clip-text text-transparent">
-          Welcome Back !
+          Welcome Back!
         </h2>
 
         <form onSubmit={handleSubmit} className="space-y-6">
