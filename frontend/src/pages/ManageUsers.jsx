@@ -29,7 +29,7 @@ export default function ManageUsers() {
   const updateRole = async (id, role) => {
     try {
       const token = localStorage.getItem("token");
-      const res = await fetch(`${API_URL}/api/users/${id}`, {
+      const res = await fetch(`${API_URL}/users/${id}`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",

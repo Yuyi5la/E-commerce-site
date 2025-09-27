@@ -17,7 +17,7 @@ export default function UserProfile() {
       }
 
       try {
-        const res = await fetch(`${API_URL}/api/users/me`, {
+        const res = await fetch(`${API_URL}/users/me`, {
           headers: { Authorization: `Bearer ${token}` },
         });
 

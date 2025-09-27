@@ -17,7 +17,7 @@ export default function ManageProducts() {
   // Fetch all products
   const fetchProducts = async () => {
     try {
-      const res = await fetch(`${API_URL}/api/products`);
+      const res = await fetch(`${API_URL}/products`);
       const data = await res.json();
       if (data.success) {
         setProducts(data.data);
@@ -68,7 +68,7 @@ export default function ManageProducts() {
         return;
       }
 
-      const res = await fetch(`${API_URL}/api/products`, {
+      const res = await fetch(`${API_URL}/products`, {
         method: "POST",
         headers: {
           Authorization: `Bearer ${token}`, // ✅ admin auth

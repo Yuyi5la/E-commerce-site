@@ -14,7 +14,7 @@ const [products, setProducts] = useState([]);
 
 
     useEffect(() => {
-    fetch(`${API_URL}/api/products`)
+    fetch(`${API_URL}/products`)
       .then((res) => res.json())
       .then((data) => setProducts(data.data))
       .catch((err) => console.error("Error fetching products:", err));

@@ -13,7 +13,7 @@ export default function Checkout() {
       if (!token) return; // no cart if not logged in
 
       try {
-        const res = await fetch(`${API_URL}/api/cart`, {
+        const res = await fetch(`${API_URL}/cart`, {
           headers: {
             "Content-Type": "application/json",
             Authorization: `Bearer ${token}`,
