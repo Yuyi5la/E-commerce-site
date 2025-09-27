@@ -5,8 +5,9 @@ import { authMiddleware, adminMiddleware } from "../middlewares/authMiddleware.j
 
 const router = express.Router();
 
-// Configure multer to store files temporarily in "uploads/"
-const upload = multer({ dest: "uploads/" });
+
+
+const upload = multer({ storage: multer.memoryStorage() });
 
 
 router.post("/products", authMiddleware,adminMiddleware,upload.array("files", 5), createProduct);

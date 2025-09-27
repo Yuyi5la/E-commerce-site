@@ -1,6 +1,11 @@
 import prisma from "../prismaClient.js";
 import cloudinary from "../config/cloudinary.js";
-import fs from "fs";
+import { Readable } from "stream";
+
+// helper: convert buffer to a readable stream
+function bufferToStream(buffer) {
+  return Readable.from(buffer);
+}
 
 export const createProduct = async (req, res) => {
   const { name, price, stock, description } = req.body;
@@ -14,17 +19,27 @@ export const createProduct = async (req, res) => {
   }
 
   try {
-    // Upload all images to Cloudinary
-  const uploadResults = await Promise.all(
-  files.map(async (file) => {
-    const result = await cloudinary.uploader.upload(file.path);
-    fs.unlinkSync(file.path); // delete local file after upload
-    return result;
-  })
-);
-    // Just take the first image as the main image
+    // Upload all images to Cloudinary using upload_stream
+    const uploadResults = await Promise.all(
+      files.map(
+        (file) =>
+          new Promise((resolve, reject) => {
+            const uploadStream = cloudinary.uploader.upload_stream(
+              { resource_type: "image" },
+              (error, result) => {
+                if (error) return reject(error);
+                resolve(result);
+              }
+            );
+            bufferToStream(file.buffer).pipe(uploadStream);
+          })
+      )
+    );
+
+    // first image as main
     const mainImageUrl = uploadResults[0].secure_url;
 
+    // save to DB
     const product = await prisma.products.create({
       data: {
         name,
