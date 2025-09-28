@@ -10,7 +10,7 @@ export default function ManageUsers() {
     const fetchUsers = async () => {
       try {
         const token = localStorage.getItem("token");
-        const res = await fetch(`${API_URL}/api/users`, {
+        const res = await fetch(`${API_URL}/users`, {
           headers: {
             Authorization: `Bearer ${token}`,
           },
