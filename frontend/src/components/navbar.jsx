@@ -39,7 +39,7 @@ export default function NavbarWithSidePanel() {
     }
 
     try {
-      const res = await fetch(`${API_URL}/api/cart`, {
+      const res = await fetch(`${API_URL}/cart`, {
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
