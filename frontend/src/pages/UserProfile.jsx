@@ -6,7 +6,7 @@ export default function UserProfile() {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
-
+  const API_URL = import.meta.env.VITE_API_URL
   // Fetch logged-in user
   useEffect(() => {
     const fetchUser = async () => {
