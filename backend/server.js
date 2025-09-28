@@ -13,10 +13,16 @@ const app = express();
 
 // Middleware
 const corsOptions = {
-  origin: [/\.vercel\.app$/], // frontend URL
+  origin: (origin, callback) => {
+    if (!origin) return callback(null, true); // allow Postman
+    if (/\.vercel\.app$/.test(origin)) {
+      return callback(null, true); // allow any Vercel frontend
+    }
+    callback(new Error("Not allowed by CORS")); // block others
+  },
   credentials: true,
   methods: ["GET","POST","PUT","DELETE","OPTIONS"],
-  allowedHeaders: ["Content-Type","Authorization"]
+  allowedHeaders: ["Content-Type","Authorization"],
 };
 
 app.use(cors(corsOptions));
