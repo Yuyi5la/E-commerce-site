@@ -28,7 +28,7 @@ const Shop = () => {
     }
 
     try {
-      const res = await fetch(`${API_URL}/api/cart`, {
+      const res = await fetch(`${API_URL}/cart`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
