@@ -13,7 +13,7 @@ const app = express();
 
 // Middleware
 const corsOptions = {
-  origin: "https://e-commerce-site-smoky-ten.vercel.app", // frontend URL
+  origin: "https://e-commerce-site-qe5kuacto-emmy-reds-projects.vercel.app", // frontend URL
   credentials: true,
   methods: ["GET","POST","PUT","DELETE","OPTIONS"],
   allowedHeaders: ["Content-Type","Authorization"]
