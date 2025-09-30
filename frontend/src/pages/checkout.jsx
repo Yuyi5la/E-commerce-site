@@ -5,8 +5,9 @@ export default function Checkout() {
   const [cartItems, setCartItems] = useState([]);
   const navigate = useNavigate();
   const API_URL = import.meta.env.VITE_API_URL;
-  const formatNaira = (val) => `₦${Number(val).toLocaleString()}`;
 
+  // helper to format money as Naira
+  const formatNaira = (val) => `₦${Number(val).toLocaleString()}`;
 
   useEffect(() => {
     const fetchCart = async () => {
@@ -111,7 +112,7 @@ export default function Checkout() {
                 {item.products?.name} × {item.quantity}
               </span>
               <span className="font-medium">
-                ₦{ formatNaira(item.price * item.quantity)}
+                {formatNaira(item.price * item.quantity)}
               </span>
             </div>
           ))}
@@ -119,13 +120,13 @@ export default function Checkout() {
           {/* Subtotal */}
           <div className="flex justify-between">
             <span className="text-gray-600">Subtotal</span>
-            <span className="font-medium">₦{formatNaira(cartTotal)}</span>
+            <span className="font-medium">{formatNaira(cartTotal)}</span>
           </div>
 
           {/* Shipping */}
           <div className="flex justify-between">
             <span className="text-gray-600">Shipping</span>
-            <span className="font-medium">₦2,000</span>
+            <span className="font-medium">{formatNaira(2000)}</span>
           </div>
         </div>
 
@@ -135,7 +136,7 @@ export default function Checkout() {
         {/* Total */}
         <div className="flex justify-between text-lg font-bold mb-6">
           <span>Total</span>
-          <span>₦{formatNaira(cartTotal + 2000)}</span>
+          <span>{formatNaira(cartTotal + 2000)}</span>
         </div>
 
         {/* Place order */}
