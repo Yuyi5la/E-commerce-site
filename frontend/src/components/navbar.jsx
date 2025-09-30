@@ -80,7 +80,7 @@ export default function NavbarWithSidePanel() {
 
   const handleLogin = () => fetchCart();
   const handleLogout = () => setCartItems([]);
-  const handleCartUpdate = () => fetchCart(); // 🔥 New listener
+  const handleCartUpdate = () => fetchCart(); // New listener
 
   window.addEventListener("login", handleLogin);
   window.addEventListener("logout", handleLogout);
