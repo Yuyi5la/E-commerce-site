@@ -18,6 +18,8 @@ import UserProfile from "./pages/UserProfile";
 import AdminDashboard from "./pages/AdminDashboard";
 import ManageUsers from "./pages/ManageUsers";
 import ManageProducts from "./pages/ManageProducts";
+import ProductDetail from "./pages/ProductDetail";
+
 
 import ProtectedRoute from "./utils/ProtectedRoute";
 import { isTokenExpired } from "./utils/auth";
@@ -38,6 +40,7 @@ const App = () => {
         <Route index element={<Home />} />
         <Route path="about" element={<About />} />
         <Route path="shop" element={<Shop />} />
+        <Route path="products/:id" element={<ProductDetail />} />
         <Route path="contact" element={<Contact />} />
         <Route path="signup" element={<Signup />} />
         <Route path="login" element={<Login />} />

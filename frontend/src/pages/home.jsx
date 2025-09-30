@@ -3,6 +3,7 @@ import Marquee from "react-fast-marquee";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
+import { Link } from "react-router-dom";
 
 
 
@@ -76,23 +77,26 @@ const [products, setProducts] = useState([]);
 <Marquee speed={30} gradient={false} pauseOnHover className="items-center">
   <div className="flex items-center">
     {products.map((product) => (
-  <div key={product.id} className="flex flex-col items-center mx-4">
-    <img
-      src={product.image_urls[0]}
-      alt={product.name}
-      className="h-40 w-auto rounded-lg shadow-md"
-    />
-    <p className="mt-2 font-semibold text-sm">{product.name}</p>
-    <p className="text-gray-600 text-sm">
-  {new Intl.NumberFormat("en-NG", {
-    style: "currency",
-    currency: "NGN",
-    minimumFractionDigits: 2,
-  }).format(Number(product.price))}
-</p>
-
-  </div>
-))}
+      <Link
+        key={product.id}
+        to={`/products/${product.id}`}
+        className="flex flex-col items-center mx-4 cursor-pointer"
+      >
+        <img
+          src={product.image_urls[0]}
+          alt={product.name}
+          className="h-40 w-auto rounded-lg shadow-md"
+        />
+        <p className="mt-2 font-semibold text-sm">{product.name}</p>
+        <p className="text-gray-600 text-sm">
+          {new Intl.NumberFormat("en-NG", {
+            style: "currency",
+            currency: "NGN",
+            minimumFractionDigits: 2,
+          }).format(Number(product.price))}
+        </p>
+      </Link>
+    ))}
   </div>
 </Marquee>
 

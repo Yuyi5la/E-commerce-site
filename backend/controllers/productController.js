@@ -126,3 +126,21 @@ export const deleteProduct = async (req, res) => {
     res.status(500).json({ error: "Delete failed" });
   }
 };
+
+export const getProductById = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const product = await prisma.products.findUnique({
+      where: { id: Number(id) },
+    });
+
+    if (!product) {
+      return res.status(404).json({ message: "Product not found" });
+    }
+
+    res.json(product);
+  } catch (error) {
+    console.error("Error fetching product:", error);
+    res.status(500).json({ message: "Server error" });
+  }
+};
