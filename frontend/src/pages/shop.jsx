@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 
 const Shop = () => {
   const [products, setProducts] = useState([]);
@@ -20,12 +21,10 @@ const Shop = () => {
 
   const handleAddToCart = async (productId) => {
     const token = localStorage.getItem("token");
-
     if (!token) {
       alert("Please log in to add items to cart.");
       return;
     }
-
     try {
       const res = await fetch(`${API_URL}/cart`, {
         method: "POST",
@@ -35,29 +34,26 @@ const Shop = () => {
         },
         body: JSON.stringify({
           product_id: productId,
-          quantity: 1, // default to 1 for now
+          quantity: 1,
         }),
       });
-
-      if (!res.ok) {
-        throw new Error("Failed to add to cart");
-      }
-
+      if (!res.ok) throw new Error("Failed to add to cart");
       const data = await res.json();
       console.log("Cart updated:", data);
-
-      // Notify navbar cart updated
       window.dispatchEvent(new Event("cartUpdated"));
-
-      alert("Item added to cart ");
+      alert("Item added to cart");
     } catch (err) {
       console.error("Error adding to cart:", err);
-      alert("Could not add to cart ");
+      alert("Could not add to cart");
     }
   };
 
   if (loading) {
-    return <p className="p-6 min-h-[60vh] flex items-center justify-center">Loading products...</p>;
+    return (
+      <p className="p-6 min-h-[60vh] flex items-center justify-center">
+        Loading products...
+      </p>
+    );
   }
 
   return (
@@ -67,12 +63,15 @@ const Shop = () => {
           key={product.id}
           className="rounded-xl shadow-md p-4 hover:shadow-lg transition"
         >
-          <img
-            src={product.image_urls?.[0]}
-            alt={product.name}
-            className="w-full h-48 object-cover rounded-lg"
-          />
-          <h2 className="mt-4 text-lg font-semibold">{product.name}</h2>
+          {/* Wrap image and name in Link to product detail page */}
+          <Link to={`/products/${product.id}`}>
+            <img
+              src={product.image_urls?.[0]}
+              alt={product.name}
+              className="w-full h-48 object-cover rounded-lg"
+            />
+            <h2 className="mt-4 text-lg font-semibold">{product.name}</h2>
+          </Link>
           <p className="text-gray-600">
             ₦{Number(product.price).toLocaleString()}
           </p>

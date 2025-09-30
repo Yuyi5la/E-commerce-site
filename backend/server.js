@@ -11,18 +11,12 @@ dotenv.config();
 
 const app = express();
 
-// Middleware
+//  Correct CORS config
 const corsOptions = {
-  origin: (origin, callback) => {
-    if (!origin) return callback(null, true); // allow Postman
-    if (/\.vercel\.app$/.test(origin)) {
-      return callback(null, true); // allow any Vercel frontend
-    }
-    callback(new Error("Not allowed by CORS")); // block others
-  },
+  origin: ["http://localhost:5173", /\.vercel\.app$/],
   credentials: true,
-  methods: ["GET","POST","PUT","DELETE","OPTIONS"],
-  allowedHeaders: ["Content-Type","Authorization"],
+  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+  allowedHeaders: ["Content-Type", "Authorization"],
 };
 
 app.use(cors(corsOptions));
