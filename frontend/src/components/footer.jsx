@@ -34,7 +34,7 @@ const Footer = () => {
 
         {/* Links */}
          <div className="flex flex-col gap-3 text-gray-400 text-sm uppercase tracking-wide">
-          <a href="/home" className="hover:text-white">home</a>
+          <a href="/" className="hover:text-white">home</a>
         <a href="/about" className="hover:text-white">About</a>
          <a href="/shop" className="hover:text-white">Shop</a>
          <a href="/contact" className="hover:text-white">Contact</a>
