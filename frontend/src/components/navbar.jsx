@@ -75,24 +75,24 @@ export default function NavbarWithSidePanel() {
   }, [location]);
 
   // Run once on mount + listen for login/logout events
-  useEffect(() => {
-    fetchCart();
+ useEffect(() => {
+  fetchCart();
 
-    const handleLogin = () => {
-      fetchCart();
-    };
-    const handleLogout = () => {
-      setCartItems([]);
-    };
+  const handleLogin = () => fetchCart();
+  const handleLogout = () => setCartItems([]);
+  const handleCartUpdate = () => fetchCart(); // 🔥 New listener
 
-    window.addEventListener("login", handleLogin);
-    window.addEventListener("logout", handleLogout);
+  window.addEventListener("login", handleLogin);
+  window.addEventListener("logout", handleLogout);
+  window.addEventListener("cartUpdated", handleCartUpdate);
 
-    return () => {
-      window.removeEventListener("login", handleLogin);
-      window.removeEventListener("logout", handleLogout);
-    };
-  }, []);
+  return () => {
+    window.removeEventListener("login", handleLogin);
+    window.removeEventListener("logout", handleLogout);
+    window.removeEventListener("cartUpdated", handleCartUpdate);
+  };
+}, []);
+
 
   // helpers
   const distinctCount = cartItems.length;

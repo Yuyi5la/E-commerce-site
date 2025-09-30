@@ -5,7 +5,6 @@ const Shop = () => {
   const [loading, setLoading] = useState(true);
   const API_URL = import.meta.env.VITE_API_URL;
 
-
   useEffect(() => {
     fetch(`${API_URL}/products`)
       .then((res) => res.json())
@@ -46,6 +45,10 @@ const Shop = () => {
 
       const data = await res.json();
       console.log("Cart updated:", data);
+
+      // Notify navbar cart updated
+      window.dispatchEvent(new Event("cartUpdated"));
+
       alert("Item added to cart ");
     } catch (err) {
       console.error("Error adding to cart:", err);
@@ -71,8 +74,8 @@ const Shop = () => {
           />
           <h2 className="mt-4 text-lg font-semibold">{product.name}</h2>
           <p className="text-gray-600">
-             ₦{Number(product.price).toLocaleString()}
-            </p>
+            ₦{Number(product.price).toLocaleString()}
+          </p>
           <button
             onClick={() => handleAddToCart(product.id)}
             className="mt-3 bg-black text-white px-4 py-2 rounded-lg hover:bg-gray-800 cursor-pointer"
