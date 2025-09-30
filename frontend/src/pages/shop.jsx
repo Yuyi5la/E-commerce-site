@@ -57,7 +57,7 @@ const Shop = () => {
   };
 
   if (loading) {
-    return <p className="p-6">Loading products...</p>;
+    return <p className="p-6 min-h-[60vh] flex items-center justify-center">Loading products...</p>;
   }
 
   return (
