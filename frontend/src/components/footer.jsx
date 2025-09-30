@@ -1,5 +1,6 @@
 import React from "react";
 import { Instagram, Twitter, Music } from "lucide-react";
+import { Link } from "react-router-dom";
 
 const Footer = () => {
   return (
@@ -34,12 +35,12 @@ const Footer = () => {
 
         {/* Links */}
          <div className="flex flex-col gap-3 text-gray-400 text-sm uppercase tracking-wide">
-          <a href="/" className="hover:text-white">home</a>
-        <a href="/about" className="hover:text-white">About</a>
-         <a href="/shop" className="hover:text-white">Shop</a>
-         <a href="/contact" className="hover:text-white">Contact</a>
-         <a href="/signup" className="hover:text-white">login/register</a>
-        </div>
+         <Link to="/" className="hover:text-white">Home</Link>
+        <Link to="/about" className="hover:text-white">About</Link>
+        <Link to="/shop" className="hover:text-white">Shop</Link>
+       <Link to="/contact" className="hover:text-white">Contact</Link>
+       <Link to="/signup" className="hover:text-white">Login/Register</Link>
+</div>
 
 
         {/* Socials */}
