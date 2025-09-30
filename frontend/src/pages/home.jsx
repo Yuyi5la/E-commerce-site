@@ -34,7 +34,7 @@ const [products, setProducts] = useState([]);
         <div className="absolute inset-0 flex flex-col items-center justify-center text-center text-white bg-black/40 px-4">
           <h1 className="text-3xl sm:text-4xl md:text-6xl font-bold">Welcome to ChromeHalo</h1>
           <p className="mt-4 text-lg md:text-xl">Trap the stars in your smile</p>
-          <button  onClick={() => navigate("/shop")} className="mt-6 px-6 py-3 bg-white text-black font-semibold rounded-lg shadow hover:bg-black hover:text-white">
+          <button  onClick={() => navigate("/shop")} className="mt-6 px-6 py-3 bg-white text-black font-semibold rounded-lg shadow hover:bg-black hover:text-white cursor-pointer">
             Shop Now
           </button>
         </div>
@@ -45,7 +45,7 @@ const [products, setProducts] = useState([]);
         <div className="max-w-6xl mx-auto px-6 lg:px-12 flex flex-col-reverse md:flex-row gap-12 items-center">
           {/* Text Section */}
           <div className="text-center md:text-left flex-1">
-            <h2 className="text-2xl md:text-4xl font-extrabold text-black mb-6">
+            <h2 className="text-2xl md:text-4xl font-extrabold text-black mb-6 ">
               CUSTOMIZE YOUR GRILLZ!
             </h2>
             <p className="text-gray-700 leading-relaxed mb-6">

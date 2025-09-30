@@ -109,7 +109,7 @@ export default function UserProfile() {
         <div className="mt-8 space-y-3">
           <button
             onClick={handleNavigation}
-            className={`w-full py-2.5 rounded-lg shadow transition ${
+            className={`w-full py-2.5 rounded-lg shadow transition cursor-pointer ${
               user.role === "admin"
                 ? "bg-black-300 hover:bg-black-700 text-white"
                 : "bg-sky-300 hover:bg-sky-700 text-white"
@@ -120,7 +120,8 @@ export default function UserProfile() {
 
           <button
             onClick={handleLogout}
-            className="w-full bg-slate-500 text-white py-2.5 rounded-lg shadow hover:bg-red-300 transition"
+            className="w-full bg-slate-500 text-white py-2.5 rounded-lg shadow hover:bg-red-300 transition cursor-pointer
+"
           >
             Logout
           </button>

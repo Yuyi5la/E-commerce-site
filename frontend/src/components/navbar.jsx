@@ -266,7 +266,7 @@ export default function NavbarWithSidePanel() {
                   setCartOpen(false);
                   navigate("/checkout");
                 }}
-                className="w-40 bg-black text-white px-4 py-2 rounded-lg hover:bg-gray-800"
+                className="w-40 bg-black text-white px-4 py-2 rounded-lg hover:bg-gray-800 cursor-pointer"
               >
                 Checkout
               </button>

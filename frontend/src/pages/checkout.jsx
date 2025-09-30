@@ -138,7 +138,7 @@ export default function Checkout() {
         </div>
 
         {/* Place order */}
-        <button className="w-full bg-black text-white py-3 rounded-lg hover:bg-gray-800">
+        <button className="w-full bg-black text-white py-3 rounded-lg hover:bg-gray-800 cursor-pointer">
           Place Order
         </button>
       </div>

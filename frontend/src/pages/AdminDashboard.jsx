@@ -9,19 +9,19 @@ export default function AdminDashboard() {
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
         <Link
           to="/admin/products"
-          className="bg-gray-100 p-6 rounded-lg shadow hover:bg-gray-200"
+          className="bg-gray-100 p-6 rounded-lg shadow hover:bg-gray-200 cursor-pointer"
         >
           Manage Products
         </Link>
         <Link
           to="/admin/orders"
-          className="bg-gray-100 p-6 rounded-lg shadow hover:bg-gray-200"
+          className="bg-gray-100 p-6 rounded-lg shadow hover:bg-gray-200 cursor-pointer"
         >
           Manage Orders
         </Link>
         <Link
           to="/admin/users"
-          className="bg-gray-100 p-6 rounded-lg shadow hover:bg-gray-200"
+          className="bg-gray-100 p-6 rounded-lg shadow hover:bg-gray-200 cursor-pointer"
         >
           Manage Users
         </Link>
