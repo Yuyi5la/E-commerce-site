@@ -5,6 +5,7 @@ import toast from "react-hot-toast";
 const Shop = () => {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [adding, setAdding] = useState(null); 
   const API_URL = import.meta.env.VITE_API_URL;
 
   useEffect(() => {
@@ -27,6 +28,9 @@ const Shop = () => {
       toast.error("Please log in to add items to cart.");
       return;
     }
+
+    setAdding(productId); // loading for product
+
     try {
       const res = await fetch(`${API_URL}/cart`, {
         method: "POST",
@@ -34,10 +38,7 @@ const Shop = () => {
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
         },
-        body: JSON.stringify({
-          product_id: productId,
-          quantity: 1,
-        }),
+        body: JSON.stringify({ product_id: productId, quantity: 1 }),
       });
 
       if (!res.ok) throw new Error("Failed to add to cart");
@@ -48,6 +49,8 @@ const Shop = () => {
     } catch (err) {
       console.error("Error adding to cart:", err);
       toast.error("Could not add to cart"); 
+    } finally {
+      setAdding(null); // stop loading
     }
   };
 
@@ -79,9 +82,37 @@ const Shop = () => {
           </p>
           <button
             onClick={() => handleAddToCart(product.id)}
-            className="mt-3 bg-black text-white px-4 py-2 rounded-lg hover:bg-gray-800 cursor-pointer"
+            disabled={adding === product.id}
+            className={`mt-3 px-4 py-2 rounded-lg text-white flex items-center justify-center ${
+              adding === product.id
+                ? "bg-gray-400 cursor-not-allowed"
+                : "bg-black hover:bg-gray-800"
+            }`}
           >
-            Add to Cart
+            {adding === product.id ? (
+              <svg
+                className="animate-spin h-5 w-5 text-white"
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+              >
+                <circle
+                  className="opacity-25"
+                  cx="12"
+                  cy="12"
+                  r="10"
+                  stroke="currentColor"
+                  strokeWidth="4"
+                ></circle>
+                <path
+                  className="opacity-75"
+                  fill="currentColor"
+                  d="M4 12a8 8 0 018-8v8H4z"
+                ></path>
+              </svg>
+            ) : (
+              "Add to Cart"
+            )}
           </button>
         </div>
       ))}
