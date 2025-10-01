@@ -142,7 +142,7 @@ const handleRemoveFromCart = async (itemId) => {
         </div>
 
         <div className="flex items-center gap-2 font-bold tracking-wider">
-          <img src="/logo2.webp" alt="Logo" className="h-10 w-10" />
+          <img src="/logo1.png" alt="Logo" className="h-10 w-10" />
           ChromeHalo
         </div>
 
