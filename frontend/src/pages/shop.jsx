@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate  } from "react-router-dom";
 import toast from "react-hot-toast"; 
 
 const Shop = () => {
@@ -7,6 +7,7 @@ const Shop = () => {
   const [loading, setLoading] = useState(true);
   const [adding, setAdding] = useState(null); // track which product is being added
   const API_URL = import.meta.env.VITE_API_URL;
+  const navigate = useNavigate();
 
   useEffect(() => {
     fetch(`${API_URL}/products`)
@@ -25,6 +26,7 @@ const handleAddToCart = async (productId) => {
   const token = localStorage.getItem("token");
   if (!token) {
     toast.error("Please log in to add items to cart.");
+    navigate("/login"); 
     return;
   }
 
