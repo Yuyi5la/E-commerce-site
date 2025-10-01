@@ -6,6 +6,8 @@ import {
   RouterProvider,
 } from "react-router-dom";
 
+import { Toaster } from "react-hot-toast"; 
+
 import RootLayout from "./layout/RootLayout";
 import Home from "./pages/home";
 import About from "./pages/about";
@@ -19,7 +21,6 @@ import AdminDashboard from "./pages/AdminDashboard";
 import ManageUsers from "./pages/ManageUsers";
 import ManageProducts from "./pages/ManageProducts";
 import ProductDetail from "./pages/ProductDetail";
-
 
 import ProtectedRoute from "./utils/ProtectedRoute";
 import { isTokenExpired } from "./utils/auth";
@@ -56,7 +57,7 @@ const App = () => {
           }
         />
 
-        {/* Admin Routes with Nested Pages */}
+        {/* Admin Routes */}
         <Route
           path="admin"
           element={
@@ -66,14 +67,19 @@ const App = () => {
           }
         >
           <Route path="users" element={<ManageUsers />} />
-         <Route path="products" element={<ManageProducts />} />
+          <Route path="products" element={<ManageProducts />} />
           <Route path="orders" element={<div>Orders Page</div>} />
         </Route>
       </Route>
     )
   );
 
-  return <RouterProvider router={router} />;
+  return (
+    <>
+      <RouterProvider router={router} />
+      <Toaster position="top-right" reverseOrder={false} /> 
+    </>
+  );
 };
 
 export default App;

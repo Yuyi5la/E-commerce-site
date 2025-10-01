@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import toast from "react-hot-toast";
 
 const Login = () => {
   const [form, setForm] = useState({ email: "", password: "" });
@@ -25,14 +26,14 @@ const Login = () => {
       const data = await res.json();
 
       if (res.ok) {
-        //  store token + user info
+        // store token + user info
         localStorage.setItem("token", data.token);
         localStorage.setItem("user", JSON.stringify(data.user));
 
-        // fire login event so Navbar (or cart) can update immediately
+        // fire login event
         window.dispatchEvent(new Event("login"));
 
-        alert("Login successful!");
+        toast.success("Login successful!"); 
 
         // redirect based on role
         if (data.user.role === "admin") {
@@ -41,11 +42,11 @@ const Login = () => {
           navigate("/profile");
         }
       } else {
-        alert(data.message || "Login failed");
+        toast.error(data.message || "Login failed"); 
       }
     } catch (err) {
       console.error("Login error:", err);
-      alert("Something went wrong");
+      toast.error("Something went wrong"); 
     } finally {
       setLoading(false);
     }

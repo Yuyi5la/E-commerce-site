@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import toast from "react-hot-toast"; 
 
 const Shop = () => {
   const [products, setProducts] = useState([]);
@@ -15,6 +16,7 @@ const Shop = () => {
       })
       .catch((err) => {
         console.error("Error fetching products:", err);
+        toast.error("Failed to fetch products");
         setLoading(false);
       });
   }, []);
@@ -22,7 +24,7 @@ const Shop = () => {
   const handleAddToCart = async (productId) => {
     const token = localStorage.getItem("token");
     if (!token) {
-      alert("Please log in to add items to cart.");
+      toast.error("Please log in to add items to cart.");
       return;
     }
     try {
@@ -37,14 +39,15 @@ const Shop = () => {
           quantity: 1,
         }),
       });
+
       if (!res.ok) throw new Error("Failed to add to cart");
+
       const data = await res.json();
-      console.log("Cart updated:", data);
       window.dispatchEvent(new Event("cartUpdated"));
-      alert("Item added to cart");
+      toast.success("Item added to cart!"); 
     } catch (err) {
       console.error("Error adding to cart:", err);
-      alert("Could not add to cart");
+      toast.error("Could not add to cart"); 
     }
   };
 
@@ -63,7 +66,6 @@ const Shop = () => {
           key={product.id}
           className="rounded-xl shadow-md p-4 hover:shadow-lg transition"
         >
-          {/* Wrap image and name in Link to product detail page */}
           <Link to={`/products/${product.id}`}>
             <img
               src={product.image_urls?.[0]}

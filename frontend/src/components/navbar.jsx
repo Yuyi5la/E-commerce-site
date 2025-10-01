@@ -2,6 +2,7 @@
 import React, { useState, useEffect } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import { isTokenExpired } from "../utils/auth";
+import toast from "react-hot-toast";
 
 export default function NavbarWithSidePanel() {
   const [menuOpen, setMenuOpen] = useState(false);
@@ -24,7 +25,6 @@ export default function NavbarWithSidePanel() {
     x.label.toLowerCase().includes(query.toLowerCase())
   );
 
-  // Fetch cart for logged-in user
   const fetchCart = async () => {
     const token = localStorage.getItem("token");
 
@@ -32,7 +32,6 @@ export default function NavbarWithSidePanel() {
       if (token && isTokenExpired(token)) {
         localStorage.removeItem("token");
         localStorage.removeItem("user");
-        console.warn("Expired token removed.");
       }
       setCartItems([]);
       return;
@@ -47,7 +46,6 @@ export default function NavbarWithSidePanel() {
       });
 
       if (res.status === 401) {
-        console.warn("Unauthorized fetching cart — clearing token and showing empty cart");
         localStorage.removeItem("token");
         localStorage.removeItem("user");
         setCartItems([]);
@@ -62,39 +60,63 @@ export default function NavbarWithSidePanel() {
       setCartItems(Array.isArray(items) ? items : []);
     } catch (err) {
       console.error("Error fetching cart:", err);
-      setCartItems([]); // fail-safe
+      setCartItems([]);
     }
   };
 
-  // Open cart if URL contains ?cart=open (used by UserProfile redirect)
   useEffect(() => {
     const params = new URLSearchParams(location.search);
-    if (params.get("cart") === "open") {
-      setCartOpen(true);
-    }
+    if (params.get("cart") === "open") setCartOpen(true);
   }, [location]);
 
-  // Run once on mount + listen for login/logout events
- useEffect(() => {
-  fetchCart();
+  useEffect(() => {
+    fetchCart();
 
-  const handleLogin = () => fetchCart();
-  const handleLogout = () => setCartItems([]);
-  const handleCartUpdate = () => fetchCart(); // New listener
+    const handleLogin = () => fetchCart();
+    const handleLogout = () => setCartItems([]);
+    const handleCartUpdate = () => fetchCart();
 
-  window.addEventListener("login", handleLogin);
-  window.addEventListener("logout", handleLogout);
-  window.addEventListener("cartUpdated", handleCartUpdate);
+    window.addEventListener("login", handleLogin);
+    window.addEventListener("logout", handleLogout);
+    window.addEventListener("cartUpdated", handleCartUpdate);
 
-  return () => {
-    window.removeEventListener("login", handleLogin);
-    window.removeEventListener("logout", handleLogout);
-    window.removeEventListener("cartUpdated", handleCartUpdate);
-  };
-}, []);
+    return () => {
+      window.removeEventListener("login", handleLogin);
+      window.removeEventListener("logout", handleLogout);
+      window.removeEventListener("cartUpdated", handleCartUpdate);
+    };
+  }, []);
+
+// Replace handleRemoveFromCart function in NavbarWithSidePanel.jsx
+
+const handleRemoveFromCart = async (itemId) => {
+  const token = localStorage.getItem("token");
+  if (!token) {
+    toast.error("Please log in to remove items from cart.");
+    return;
+  }
+
+  try {
+    const res = await fetch(`${API_URL}/cart/${itemId}`, {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    if (!res.ok) throw new Error("Failed to remove item from cart");
+
+    fetchCart(); // refresh cart
+    toast.success("Item removed from cart!");
+    window.dispatchEvent(new Event("cartUpdated")); 
+  } catch (err) {
+    console.error("Error removing item:", err);
+    toast.error("Could not remove item from cart");
+  }
+};
 
 
-  // helpers
   const distinctCount = cartItems.length;
   const totalQuantity = cartItems.reduce(
     (acc, i) => acc + (Number(i.quantity) || 0),
@@ -104,14 +126,12 @@ export default function NavbarWithSidePanel() {
     (acc, i) => acc + (Number(i.price) || 0) * (Number(i.quantity) || 0),
     0
   );
-
   const formatNaira = (val) => `₦${Number(val).toLocaleString()}`;
 
   return (
     <>
       {/* Navbar */}
       <header className="w-full bg-white border-b border-black px-4 py-5 flex items-center justify-between relative z-10">
-        {/* Left: hamburger */}
         <div
           onClick={() => setMenuOpen(true)}
           className="cursor-pointer text-2xl"
@@ -121,13 +141,11 @@ export default function NavbarWithSidePanel() {
           ☰
         </div>
 
-        {/* Middle: brand */}
         <div className="flex items-center gap-2 font-bold tracking-wider">
           <img src="/logo2.webp" alt="Logo" className="h-10 w-10" />
           ChromeHalo
         </div>
 
-        {/* Right: cart */}
         <div
           className="relative h-10 w-10 flex items-center justify-center text-2xl cursor-pointer"
           onClick={() => setCartOpen(true)}
@@ -154,7 +172,7 @@ export default function NavbarWithSidePanel() {
         />
       )}
 
-      {/* Side panel - LEFT menu */}
+      {/* Left Menu */}
       <aside
         className={`fixed inset-y-0 left-0 z-20 transform bg-white border-r border-black p-6
         transition-transform duration-300 ease-in-out
@@ -199,7 +217,7 @@ export default function NavbarWithSidePanel() {
         </nav>
       </aside>
 
-      {/* Side panel - RIGHT cart */}
+      {/* Right Cart */}
       <aside
         className={`fixed inset-y-0 right-0 z-20 transform bg-white border-l border-black p-6
         transition-transform duration-300 ease-in-out
@@ -213,7 +231,6 @@ export default function NavbarWithSidePanel() {
           </button>
         </div>
 
-        {/* Cart Items - scrollable */}
         <div className="flex-1 overflow-y-auto space-y-4">
           {cartItems.length === 0 ? (
             <p className="text-gray-500">Cart is empty 💤</p>
@@ -238,17 +255,26 @@ export default function NavbarWithSidePanel() {
                     </p>
                   </div>
                 </div>
-                <p className="font-bold text-gray-700">
-                  {formatNaira(
-                    (Number(item.price) || 0) * (Number(item.quantity) || 0)
-                  )}
-                </p>
+
+                <div className="flex flex-col items-end gap-1">
+                  <p className="font-bold text-gray-700">
+                    {formatNaira(
+                      (Number(item.price) || 0) *
+                        (Number(item.quantity) || 0)
+                    )}
+                  </p>
+                  <button
+                    onClick={() => handleRemoveFromCart(item.id)}
+                    className="text-sm text-red-600 hover:underline"
+                  >
+                    Remove
+                  </button>
+                </div>
               </div>
             ))
           )}
         </div>
 
-        {/* Footer: subtotal, divider, checkout */}
         {cartItems.length > 0 && (
           <div className="mt-4">
             <div className="flex justify-between text-gray-700 text-base mb-2">

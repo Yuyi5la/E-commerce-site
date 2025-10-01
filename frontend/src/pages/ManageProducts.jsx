@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import toast from "react-hot-toast";
 
 export default function ManageProducts() {
   const [products, setProducts] = useState([]);
@@ -22,10 +23,11 @@ export default function ManageProducts() {
       if (data.success) {
         setProducts(data.data);
       } else {
-        console.error("Failed to load products:", data.message);
+        toast.error(data.message || "Failed to load products");
       }
     } catch (err) {
       console.error("Error fetching products:", err);
+      toast.error("Failed to fetch products");
     }
   };
 
@@ -33,7 +35,6 @@ export default function ManageProducts() {
     fetchProducts();
   }, []);
 
-  // Handle form change
   const handleChange = (e) => {
     const { name, value, files } = e.target;
     if (files) {
@@ -43,7 +44,6 @@ export default function ManageProducts() {
     }
   };
 
-  // Create product
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
@@ -53,7 +53,7 @@ export default function ManageProducts() {
     Object.keys(form).forEach((key) => {
       if (key === "images" && form.images) {
         for (let i = 0; i < form.images.length; i++) {
-          formData.append("files", form.images[i]); // ✅ match Multer field name
+          formData.append("files", form.images[i]);
         }
       } else {
         formData.append(key, form[key]);
@@ -64,6 +64,7 @@ export default function ManageProducts() {
       const token = localStorage.getItem("token");
       if (!token) {
         setError("You must be logged in as admin to create products");
+        toast.error("You must be logged in as admin");
         setLoading(false);
         return;
       }
@@ -71,38 +72,34 @@ export default function ManageProducts() {
       const res = await fetch(`${API_URL}/products`, {
         method: "POST",
         headers: {
-          Authorization: `Bearer ${token}`, // ✅ admin auth
+          Authorization: `Bearer ${token}`,
         },
         body: formData,
       });
 
       if (res.ok) {
-        setForm({
-          name: "",
-          price: "",
-          stock: "",
-          description: "",
-          images: null,
-        });
+        setForm({ name: "", price: "", stock: "", description: "", images: null });
+        toast.success("Product created successfully!");
         fetchProducts();
       } else {
         const errMsg = await res.text();
         setError(`Create failed: ${errMsg}`);
+        toast.error(`Create failed: ${errMsg}`);
       }
     } catch (err) {
       console.error("Error creating product:", err);
       setError("Something went wrong while creating product");
+      toast.error("Something went wrong while creating product");
     } finally {
       setLoading(false);
     }
   };
 
-  // Delete product
   const handleDelete = async (id) => {
     try {
       const token = localStorage.getItem("token");
       if (!token) {
-        alert("You must be logged in as admin to delete products");
+        toast.error("You must be logged in as admin to delete products");
         return;
       }
 
@@ -118,9 +115,11 @@ export default function ManageProducts() {
         throw new Error(`Delete failed: ${errMsg}`);
       }
 
-      fetchProducts(); // refresh list
+      toast.success("Product deleted successfully!");
+      fetchProducts();
     } catch (err) {
       console.error("Error deleting product:", err);
+      toast.error(err.message || "Failed to delete product");
     }
   };
 

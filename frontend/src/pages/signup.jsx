@@ -1,10 +1,10 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import toast from "react-hot-toast"; 
 
 const Signup = () => {
   const [form, setForm] = useState({ name: "", email: "", password: "" });
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
   const navigate = useNavigate();
   const API_URL = import.meta.env.VITE_API_URL;
 
@@ -15,7 +15,6 @@ const Signup = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
-    setError("");
 
     try {
       const res = await fetch(`${API_URL}/auth/register`, {
@@ -27,14 +26,14 @@ const Signup = () => {
       const data = await res.json();
 
       if (res.ok) {
-        alert("User created successfully!");
+        toast.success("User created successfully!"); 
         navigate("/login"); 
       } else {
-        setError(data.message || "Signup failed");
+        toast.error(data.message || "Signup failed"); 
       }
     } catch (err) {
       console.error("Signup error:", err);
-      setError("Something went wrong. Please try again.");
+      toast.error("Something went wrong. Please try again.");
     } finally {
       setLoading(false);
     }
@@ -46,8 +45,6 @@ const Signup = () => {
         <h2 className="text-3xl font-extrabold text-center mb-6 bg-gradient-to-r from-gray-700 to-gray-900 bg-clip-text text-transparent">
           Create Account
         </h2>
-
-        {error && <p className="text-red-600 text-sm mb-4">{error}</p>}
 
         <form onSubmit={handleSubmit} className="space-y-6">
           <div>

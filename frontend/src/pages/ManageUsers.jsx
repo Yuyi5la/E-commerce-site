@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import toast from "react-hot-toast"; 
 
 export default function ManageUsers() {
   const [users, setUsers] = useState([]);
@@ -19,6 +20,8 @@ export default function ManageUsers() {
         if (res.ok) setUsers(data.data);
       } catch (err) {
         console.error("Error fetching users:", err);
+        toast.error("Failed to fetch users");
+
       } finally {
         setLoading(false);
       }
@@ -40,12 +43,12 @@ export default function ManageUsers() {
 
       const data = await res.json();
       if (res.ok) {
-        alert("Role updated successfully");
+        toast.success("Role updated successfully");
         setUsers((prev) =>
           prev.map((u) => (u.id === id ? { ...u, role } : u))
         );
       } else {
-        alert(data.message || "Failed to update role");
+        toast.error(data.message || "Failed to update role");
       }
     } catch (err) {
       console.error("Error updating role:", err);

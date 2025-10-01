@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
+import toast from "react-hot-toast"; 
 
 const ProductDetail = () => {
   const { id } = useParams();
@@ -18,6 +19,8 @@ const ProductDetail = () => {
         setProduct(data.data || data);
       } catch (err) {
         console.error("Error fetching product:", err);
+        toast.error("Failed to load product");
+
       }
     };
 
@@ -27,7 +30,7 @@ const ProductDetail = () => {
   const handleAddToCart = async () => {
     const token = localStorage.getItem("token");
     if (!token) {
-      alert("Please log in to add items to cart.");
+     toast.error("Please log in to add items to cart.");
       return;
     }
 
@@ -48,10 +51,10 @@ const ProductDetail = () => {
       const data = await res.json();
       console.log("Cart updated:", data);
       window.dispatchEvent(new Event("cartUpdated"));
-      alert("Item added to cart!");
+      toast.success("Item added to cart!");
     } catch (err) {
       console.error("Error adding to cart:", err);
-      alert("Could not add to cart.");
+      toast.error("Could not add to cart.");
     } finally {
       setLoading(false);
     }
@@ -113,7 +116,7 @@ const ProductDetail = () => {
             </button>
             <span className="px-6 py-2">{quantity}</span>
             <button
-              onClick={() => setQuantity(quantity + 1)}
+              onClick={() => setQuantity(Math.min(99, quantity + 1))}
               className="px-4 py-2 bg-gray-200 hover:bg-gray-300"
             >
               +
