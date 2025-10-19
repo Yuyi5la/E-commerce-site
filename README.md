@@ -1,4 +1,4 @@
-#  🛍️ E-commerce Site (Practice Project)
+#  E-commerce Site (Practice Project)
 
 This is a **full-stack e-commerce application** I’m building to practice and apply everything I’ve learned so far in web development ,from backend APIs and databases to frontend design and integration.
 
@@ -21,7 +21,7 @@ This is a **full-stack e-commerce application** I’m building to practice and a
 - Nodemon
 
 
-## 📂 Project Structure
+## Project Structure
 
 ```bash
 E-commerce-site/
