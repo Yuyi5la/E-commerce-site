@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate,Link } from "react-router-dom";
 
 export default function Checkout() {
   const [cartItems, setCartItems] = useState([]);
@@ -140,9 +140,11 @@ export default function Checkout() {
         </div>
 
         {/* Place order */}
+        <Link to ="/Payment">
         <button className="w-full bg-black text-white py-3 rounded-lg hover:bg-gray-800 cursor-pointer">
           Place Order
         </button>
+        </Link>
       </div>
     </div>
   );

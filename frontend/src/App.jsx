@@ -21,7 +21,7 @@ import AdminDashboard from "./pages/AdminDashboard";
 import ManageUsers from "./pages/ManageUsers";
 import ManageProducts from "./pages/ManageProducts";
 import ProductDetail from "./pages/ProductDetail";
-
+import Payment from "./pages/payment"
 import ProtectedRoute from "./utils/ProtectedRoute";
 import { isTokenExpired } from "./utils/auth";
 
@@ -46,6 +46,7 @@ const App = () => {
         <Route path="signup" element={<Signup />} />
         <Route path="login" element={<Login />} />
         <Route path="checkout" element={<Checkout />} />
+         <Route path="/payment" element={<Payment />} />
 
         {/* Protected Routes */}
         <Route
